@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -42,10 +40,10 @@ fun TimeCard() {
     }
 
     val timeFormatter = SimpleDateFormat("HH:mm", Locale.getDefault())
-    val dateFormatter = SimpleDateFormat("EEEE, MMMM dd, yyyy", Locale.getDefault())
+    val dateFormatter = SimpleDateFormat("EEEE\nMMMM dd, yyyy", Locale.getDefault())
 
     GradientCard (
-        modifier = Modifier.width(screenWidth*0.3.dp).height(screenHeight*0.3.dp),
+        modifier = Modifier.width(screenWidth*0.23.dp).height(screenHeight*0.3.dp),
         colors = listOf(Color(0xff390099), Color(0xff390099), Color(0xff390099)),
     ) {
         Column(
@@ -54,9 +52,9 @@ fun TimeCard() {
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            GothamText(timeFormatter.format(currentTime), 72.sp, Color.White, FontWeight.Normal)
+            GothamText(timeFormatter.format(currentTime), 64.sp, Color.White, FontWeight.Normal)
             Spacer(modifier = Modifier.height(20.dp))
-            GothamText(dateFormatter.format(currentTime), 22.sp, Color.White, FontWeight.Normal)
+            GothamText(dateFormatter.format(currentTime), 18.sp, Color.White, FontWeight.Normal)
         }
     }
 }

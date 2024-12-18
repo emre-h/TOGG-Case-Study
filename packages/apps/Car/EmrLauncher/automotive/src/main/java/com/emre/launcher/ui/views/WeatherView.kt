@@ -35,7 +35,7 @@ fun WeatherView(viewModel: WeatherViewModel) {
     val weatherIconSize = 78.dp
 
     GradientCard(
-        modifier = Modifier.width(screenWidth*0.3.dp).height(screenHeight*0.35.dp),
+        modifier = Modifier.width(screenWidth*0.23.dp).height(screenHeight*0.3.dp),
         colors = listOf(Color(0xff1976D2), Color(0xFF6dd5ed), Color(0xFF6dd5ed))
     )
     {
@@ -63,7 +63,7 @@ fun WeatherView(viewModel: WeatherViewModel) {
                         .height(weatherIconSize)
                         .width(weatherIconSize)
                 )
-                Spacer(modifier = Modifier.width(50.dp))
+                Spacer(modifier = Modifier.width(30.dp))
                 Column(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -71,7 +71,7 @@ fun WeatherView(viewModel: WeatherViewModel) {
                 ) {
                     GothamText("Istanbul", 32.sp, Color(0xFF121212), FontWeight.Bold)
                     Spacer(modifier = Modifier.height(10.dp))
-                    GothamText("10.6°C", 48.sp, Color(0xFF121212), FontWeight.Normal)
+                    GothamText("10.6°C", 40.sp, Color(0xFF121212), FontWeight.Normal)
                     Spacer(modifier = Modifier.height(10.dp))
                     GothamText("Clear", 24.sp, Color(0xFF121212), FontWeight.Normal)
                 }

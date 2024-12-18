@@ -39,8 +39,8 @@ import androidx.compose.ui.unit.times
 import com.emre.launcher.data.models.AppInfo
 import com.emre.launcher.data.repository.AppRepositoryImpl
 import com.emre.launcher.domain.usecase.GetLaunchableAppsUseCase
-import com.emre.launcher.ui.viewmodels.AppDrawerViewModel
 import com.emre.launcher.ui.theme.EmrLauncherTheme
+import com.emre.launcher.ui.viewmodels.AppDrawerViewModel
 
 class AppDrawerActivity : ComponentActivity() {
     private val repository by lazy {

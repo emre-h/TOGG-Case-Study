@@ -3,16 +3,22 @@ package com.emre.launcher
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import com.emre.launcher.data.api.WeatherAPI
 import com.emre.launcher.data.repository.WeatherRepositoryImpl
 import com.emre.launcher.domain.usecase.GetWeatherUseCase
 import com.emre.launcher.ui.theme.EmrLauncherTheme
 import com.emre.launcher.ui.viewmodels.WeatherViewModel
+import com.emre.launcher.ui.views.ChargeView
 import com.emre.launcher.ui.views.MapsView
 import com.emre.launcher.ui.views.SpeedView
 import com.emre.launcher.ui.views.TimeCard
@@ -40,17 +46,31 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             EmrLauncherTheme {
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    containerColor = com.emre.launcher.ui.theme.LauncherBackgroundColor
-                ) { innerPadding ->
-                    Row {
-                        Column {
-                            WeatherView(viewModel = weatherViewModel)
-                            TimeCard()
-                            SpeedView()
+                Box {
+                    Image(
+                        modifier = Modifier.fillMaxSize(),
+                        painter = painterResource(R.drawable.wallp3),
+                        contentDescription = "background_image",
+                        contentScale = ContentScale.FillBounds
+                    )
+                    Scaffold(
+                        modifier = Modifier.fillMaxSize(),
+                        containerColor = Color(0xbb050505)
+                    ) { innerPadding ->
+                        Row {
+                            Column {
+                                Row {
+                                    WeatherView(viewModel = weatherViewModel)
+                                    TimeCard()
+                                }
+
+                                Row {
+                                    SpeedView()
+                                    ChargeView()
+                                }
+                            }
+                            MapsView()
                         }
-                        MapsView()
                     }
                 }
             }
