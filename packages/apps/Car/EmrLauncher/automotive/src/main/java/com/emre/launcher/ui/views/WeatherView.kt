@@ -5,14 +5,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
 import com.emre.launcher.ui.viewmodels.WeatherViewModel
 
@@ -23,12 +24,12 @@ fun WeatherView(viewModel: WeatherViewModel) {
     val screenWidth = configuration.screenWidthDp
 
     GradientCard(
-        modifier = Modifier.width(screenWidth*0.25.dp),
+        modifier = Modifier.width(screenWidth*0.3.dp),
         colors = listOf(Color(0xff1976D2), Color(0xFF6dd5ed), Color(0xFF6dd5ed))
     )
     {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text("Weather")
+            GothamText("Weather", 24.sp, Color(0xFF121212), FontWeight.Normal)
 
             /*Text("City: Istanbul")
             Text("Temperature: 10.6°C")

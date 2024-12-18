@@ -17,7 +17,6 @@
         android:value="AIzaSyD6xe8X7UF0zCKxLU1O2zJYqSBtcpjxOVY" />
 
     <application
-        android:name=".EmrLauncherApplication"
         android:allowBackup="true"
         android:appCategory="audio"
         android:icon="@mipmap/ic_launcher"
