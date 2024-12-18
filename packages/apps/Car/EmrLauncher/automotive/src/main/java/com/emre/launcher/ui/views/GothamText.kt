@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import com.emre.launcher.R
 
@@ -16,6 +17,7 @@ fun GothamText(text: String, size: TextUnit, color: Color, fontWeight: FontWeigh
             Font(R.font.gotham_bold, FontWeight.Bold),
             Font(R.font.gotham, FontWeight.Normal)
         ),
+        textAlign = TextAlign.Center,
         fontWeight = fontWeight,
         fontSize = size,
         color = color,

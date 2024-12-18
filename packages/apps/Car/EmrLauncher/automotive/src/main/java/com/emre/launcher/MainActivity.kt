@@ -3,21 +3,20 @@ package com.emre.launcher
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import com.emre.launcher.data.api.WeatherAPI
 import com.emre.launcher.data.repository.WeatherRepositoryImpl
 import com.emre.launcher.domain.usecase.GetWeatherUseCase
 import com.emre.launcher.ui.theme.EmrLauncherTheme
 import com.emre.launcher.ui.viewmodels.WeatherViewModel
+import com.emre.launcher.ui.views.MapsView
+import com.emre.launcher.ui.views.SpeedView
+import com.emre.launcher.ui.views.TimeCard
 import com.emre.launcher.ui.views.WeatherView
-import com.google.maps.android.compose.GoogleMap
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -28,7 +27,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         actionBar?.hide()
 
-        // Retrofit ve Repository başlatma
         val weatherApi = Retrofit.Builder()
             .baseUrl("https://api.openweathermap.org/data/2.5/")
             .addConverterFactory(GsonConverterFactory.create())
@@ -44,15 +42,19 @@ class MainActivity : ComponentActivity() {
             EmrLauncherTheme {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
-                    containerColor = Color(0xFF121212)
+                    containerColor = com.emre.launcher.ui.theme.LauncherBackgroundColor
                 ) { innerPadding ->
                     Row {
-                        WeatherView(viewModel = weatherViewModel)
+                        Column {
+                            WeatherView(viewModel = weatherViewModel)
+                            TimeCard()
+                            SpeedView()
+                        }
+                        MapsView()
                     }
                 }
             }
         }
-        
         //weatherViewModel.loadWeather("Istanbul")
     }
 }

@@ -3,6 +3,7 @@ package com.emre.launcher.ui.views
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -14,9 +15,10 @@ import androidx.compose.ui.unit.dp
 fun GradientCard(
     colors: List<Color>, // Gradient renkleri
     modifier: Modifier = Modifier,
-    content: @Composable BoxScope.() -> Unit // İçeriği tanımlamak için slot
+    content: @Composable BoxScope.() -> Unit,
 ) {
     Card(
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         modifier = modifier
             .padding(16.dp)
             .fillMaxWidth()
