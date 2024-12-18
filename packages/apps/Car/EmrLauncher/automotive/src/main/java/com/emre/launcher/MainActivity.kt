@@ -40,8 +40,6 @@ class MainActivity : ComponentActivity() {
 
         weatherViewModel = WeatherViewModel(getWeatherUseCase)
 
-        //requestNotificationAccess(this)
-
         setContent {
             EmrLauncherTheme {
                 Scaffold(
@@ -50,29 +48,11 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     Row {
                         WeatherView(viewModel = weatherViewModel)
-                        MountainMap()
                     }
                 }
             }
         }
         
-        weatherViewModel.loadWeather("Istanbul")
-    }
-
-    @Composable
-    fun MountainMap() {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding()
-        ) {
-            // Add GoogleMap here
-            GoogleMap(
-                modifier = Modifier.fillMaxSize(),
-                onMapLoaded = {  }
-            )
-
-            // ...
-        }
+        //weatherViewModel.loadWeather("Istanbul")
     }
 }
