@@ -31,7 +31,7 @@ fun ChargeView() {
 
     GradientCard(
         modifier = Modifier.width(cardWidth.dp).height(cardHeight.dp),
-        colors = listOf(Color(0xff6a994e), Color(0xff6a994e))
+        colors = listOf(Color(0xff009990), Color(0xff6a994e))
     ) {
         Box(
             modifier = Modifier.fillMaxSize()

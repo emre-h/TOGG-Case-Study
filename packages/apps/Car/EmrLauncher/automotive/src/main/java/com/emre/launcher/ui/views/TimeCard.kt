@@ -44,7 +44,7 @@ fun TimeCard() {
 
     GradientCard (
         modifier = Modifier.width(screenWidth*0.23.dp).height(screenHeight*0.3.dp),
-        colors = listOf(Color(0xff390099), Color(0xff390099), Color(0xff390099)),
+        colors = listOf(Color(0xff390099), Color(0xff474E93)),
     ) {
         Column(
             modifier = Modifier

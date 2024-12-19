@@ -29,7 +29,7 @@ fun SpeedView() {
 
     GradientCard(
         modifier = Modifier.width(cardWidth.dp).height(cardHeight.dp),
-        colors = listOf(Color(0xffe63946), Color(0xffe63946))
+        colors = listOf(Color(0xff074799), Color(0xff009990))
     ) {
         Box(
             modifier = Modifier.fillMaxSize()
