@@ -69,7 +69,10 @@ class MainActivity : ComponentActivity() {
                                     ChargeView()
                                 }
                             }
-                            MapsView()
+                            Column {
+                                MapsView()
+                                TimeCard()
+                            }
                         }
                     }
                 }
