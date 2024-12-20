@@ -31,7 +31,6 @@ import com.emre.launcher.ui.cards.WeatherView
 import com.emre.launcher.ui.theme.EmrLauncherTheme
 import com.emre.launcher.ui.viewmodels.CarViewModel
 import com.emre.launcher.ui.viewmodels.WeatherViewModel
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -52,25 +51,18 @@ class MainActivity : ComponentActivity() {
             }
         }
         weatherViewModel.loadWeather("Istanbul")
+        //carViewModel.toggleDoor("frontLeft")
+        //carViewModel.toggleDoor("frontRight")
+        //carViewModel.toggleDoor("backLeft")
+        //carViewModel.toggleDoor("backRight")
     }
 
     @Composable
     private fun MainScreen() {
         Box {
-            val systemUiController = rememberSystemUiController()
             val configuration = LocalConfiguration.current
             val screenHeight = configuration.screenHeightDp
             val screenWidth = configuration.screenWidthDp
-
-            systemUiController.setStatusBarColor(
-                color = Color.Transparent,
-                darkIcons = true
-            )
-
-            systemUiController.setNavigationBarColor(
-                color = Color.Black,
-                darkIcons = false
-            )
 
             enableEdgeToEdge()
 
@@ -83,7 +75,7 @@ class MainActivity : ComponentActivity() {
 
             Scaffold(
                 modifier = Modifier.fillMaxSize().padding(top = 80.dp),
-                containerColor = Color(0x55050505)
+                containerColor = Color(0x44050505)
             ) { innerPadding ->
                 Row {
                     Column {
