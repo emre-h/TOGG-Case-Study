@@ -1,4 +1,4 @@
-package com.emre.launcher.ui.views
+package com.emre.launcher.ui.cards
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

@@ -1,101 +1,111 @@
 package com.emre.launcher
 
+import CarCard
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.emre.launcher.data.api.WeatherAPI
-import com.emre.launcher.data.repository.WeatherRepositoryImpl
-import com.emre.launcher.domain.usecase.GetWeatherUseCase
+import androidx.compose.ui.unit.times
+import com.emre.launcher.ui.cards.EnergyCard
+import com.emre.launcher.ui.cards.MapsCard
+import com.emre.launcher.ui.cards.SpeedCard
+import com.emre.launcher.ui.cards.TimeCard
+import com.emre.launcher.ui.cards.WeatherView
 import com.emre.launcher.ui.theme.EmrLauncherTheme
+import com.emre.launcher.ui.viewmodels.CarViewModel
 import com.emre.launcher.ui.viewmodels.WeatherViewModel
-import com.emre.launcher.ui.views.ChargeView
-import com.emre.launcher.ui.views.MapsView
-import com.emre.launcher.ui.views.SpeedView
-import com.emre.launcher.ui.views.TimeCard
-import com.emre.launcher.ui.views.WeatherView
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private lateinit var weatherViewModel: WeatherViewModel
+    // Get the ViewModel instances using Hilt
+    private val weatherViewModel: WeatherViewModel by viewModels()
+    private val carViewModel: CarViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         actionBar?.hide()
 
-        val weatherApi = Retrofit.Builder()
-            .baseUrl("https://api.openweathermap.org/data/2.5/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(WeatherAPI::class.java)
-
-        val weatherRepository = WeatherRepositoryImpl(weatherApi)
-        val getWeatherUseCase = GetWeatherUseCase(weatherRepository)
-
-        weatherViewModel = WeatherViewModel(getWeatherUseCase)
+        weatherViewModel.loadWeather("Istanbul")
 
         setContent {
             EmrLauncherTheme {
-                Box {
-                    val systemUiController = rememberSystemUiController()
+                MainScreen()
+            }
+        }
+        weatherViewModel.loadWeather("Istanbul")
+    }
 
-                    // Status bar stilini ve rengini ayarla
-                    systemUiController.setStatusBarColor(
-                        color = Color.Transparent, // Şeffaflık
-                        darkIcons = true // İkonlar koyu renk olsun
-                    )
+    @Composable
+    private fun MainScreen() {
+        Box {
+            val systemUiController = rememberSystemUiController()
+            val configuration = LocalConfiguration.current
+            val screenHeight = configuration.screenHeightDp
+            val screenWidth = configuration.screenWidthDp
 
-                    // Navigation bar rengini ayarla
-                    systemUiController.setNavigationBarColor(
-                        color = Color.Black, // Siyah
-                        darkIcons = false // İkonlar açık renk olsun
-                    )
-                    enableEdgeToEdge()
-                    Image(
-                        modifier = Modifier.fillMaxSize(),
-                        painter = painterResource(R.drawable.wallp3),
-                        contentDescription = "background_image",
-                        contentScale = ContentScale.FillBounds
-                    )
-                    Scaffold(
-                        modifier = Modifier.fillMaxSize().padding(top = 80.dp),
-                        containerColor = Color(0x55050505)
-                    ) { innerPadding ->
-                        Row {
-                            Column {
-                                Row {
-                                    WeatherView(viewModel = weatherViewModel)
-                                    TimeCard()
-                                }
+            systemUiController.setStatusBarColor(
+                color = Color.Transparent,
+                darkIcons = true
+            )
 
-                                Row {
-                                    SpeedView()
-                                    ChargeView()
-                                }
-                            }
-                            Column {
-                                MapsView()
-                                TimeCard()
-                            }
-                        }
+            systemUiController.setNavigationBarColor(
+                color = Color.Black,
+                darkIcons = false
+            )
+
+            enableEdgeToEdge()
+
+            Image(
+                modifier = Modifier.fillMaxSize(),
+                painter = painterResource(R.drawable.wallp3),
+                contentDescription = "background_image",
+                contentScale = ContentScale.FillBounds
+            )
+
+            Scaffold(
+                modifier = Modifier.fillMaxSize().padding(top = 80.dp),
+                containerColor = Color(0x55050505)
+            ) { innerPadding ->
+                Row {
+                    Column {
+                        WeatherView(
+                            modifier = Modifier.width(screenWidth*0.25.dp).height(screenHeight*0.34.dp),
+                            viewModel = weatherViewModel
+                        )
+                        CarCard(
+                            modifier = Modifier.width(screenWidth*0.25.dp).height(screenHeight*0.8.dp),
+                            carState = carViewModel.carState.value
+                        )
+                    }
+                    Column {
+                        TimeCard(modifier = Modifier.width(screenWidth*0.25.dp).height(screenHeight*0.34.dp))
+                        SpeedCard(modifier = Modifier.width(screenWidth*0.25.dp).height(screenHeight*0.34.dp))
+                        EnergyCard(modifier = Modifier.width(screenWidth*0.25.dp).height(screenHeight*0.34.dp))
+                    }
+                    Column {
+                        MapsCard()
                     }
                 }
             }
         }
-        //weatherViewModel.loadWeather("Istanbul")
     }
 }

@@ -1,4 +1,4 @@
-package com.emre.launcher.domain.usecase
+package com.emre.launcher.domain.usecases
 
 import com.emre.launcher.data.models.Weather
 import com.emre.launcher.data.repository.WeatherRepository

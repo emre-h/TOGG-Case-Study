@@ -5,10 +5,16 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.emre.launcher.data.models.Weather
-import com.emre.launcher.domain.usecase.GetWeatherUseCase
+import com.emre.launcher.domain.usecases.GetWeatherUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class WeatherViewModel(private val getWeatherUseCase: GetWeatherUseCase) : ViewModel() {
+@HiltViewModel
+class WeatherViewModel @Inject constructor(
+    private val getWeatherUseCase: GetWeatherUseCase
+) : ViewModel() {
+
     private val _weather = MutableLiveData<Weather>()
     val weather: LiveData<Weather> = _weather
 
@@ -17,7 +23,7 @@ class WeatherViewModel(private val getWeatherUseCase: GetWeatherUseCase) : ViewM
             try {
                 _weather.value = getWeatherUseCase.execute(city)
             } catch (e: Exception) {
-                // Error handling
+                e.printStackTrace()
             }
         }
     }

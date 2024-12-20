@@ -1,11 +1,10 @@
-package com.emre.launcher.ui.views
+package com.emre.launcher.ui.cards
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -15,21 +14,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.times
+import com.emre.launcher.ui.views.GothamText
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
 @Composable
-fun TimeCard() {
-    val configuration = LocalConfiguration.current
-    val screenHeight = configuration.screenHeightDp
-    val screenWidth = configuration.screenWidthDp
-
+fun TimeCard(modifier: Modifier) {
     var currentTime by remember { mutableStateOf(Calendar.getInstance().time) }
 
     LaunchedEffect(Unit) {
@@ -43,7 +37,7 @@ fun TimeCard() {
     val dateFormatter = SimpleDateFormat("EEEE\nMMMM dd, yyyy", Locale.getDefault())
 
     GradientCard (
-        modifier = Modifier.width(screenWidth*0.23.dp).height(screenHeight*0.3.dp),
+        modifier = modifier,
         colors = listOf(Color(0xff390099), Color(0xff474E93)),
     ) {
         Column(

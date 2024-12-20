@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.org.jetbrains.kotlin.kapt)
+    alias(libs.plugins.hiltAndroid)
 }
 
 android {
@@ -53,6 +55,10 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.accompanist.systemuicontroller)
+
+    implementation(libs.hilt.android.v2511)
+    implementation(libs.hilt)
+    kapt(libs.hilt.compiler)
 
     implementation(libs.kotlinx.coroutines.android)
 
