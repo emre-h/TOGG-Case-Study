@@ -47,7 +47,6 @@ fun CarCard(modifier: Modifier, carState: Car) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.weight(1f)) // Push buttons to the bottom
-                // onToggleDoor("frontLeft") // Add logic to control door state
             }
         }
     }

@@ -25,7 +25,7 @@ fun GradientCard(
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         modifier = modifier
-            .padding(16.dp)
+            .padding(10.dp)
             .fillMaxWidth()
             .height(200.dp),
     ) {

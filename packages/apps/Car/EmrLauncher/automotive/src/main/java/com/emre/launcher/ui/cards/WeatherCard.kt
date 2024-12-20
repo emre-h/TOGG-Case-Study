@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -62,7 +61,6 @@ fun WeatherView(modifier: Modifier, viewModel: WeatherViewModel) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(16.dp)
             ) {
-
                 /*weather?.let {
                     Text("City: ${it.city}")
                     Text("Temperature: ${it.temperature}°C")
@@ -76,14 +74,4 @@ fun WeatherView(modifier: Modifier, viewModel: WeatherViewModel) {
             }
         }
     }
-    /*Text("City: Istanbul")
-                Text("Temperature: 10.6°C")
-                Text("Description: clearsky")
-                weather?.let {
-                    Text("City: ${it.city}")
-                    Text("Temperature: ${it.temperature}°C")
-                    Text("Description: ${it.description}")
-                }*/
-
-    //Spacer(modifier = Modifier.height(16.dp))
 }

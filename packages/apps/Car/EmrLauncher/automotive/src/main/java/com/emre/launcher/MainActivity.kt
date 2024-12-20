@@ -102,7 +102,7 @@ class MainActivity : ComponentActivity() {
                         EnergyCard(modifier = Modifier.width(screenWidth*0.25.dp).height(screenHeight*0.34.dp))
                     }
                     Column {
-                        MapsCard()
+                        MapsCard(modifier = Modifier.width(screenWidth*0.7.dp).height(screenHeight.dp))
                     }
                 }
             }
