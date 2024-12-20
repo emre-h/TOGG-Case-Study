@@ -3,16 +3,19 @@ package com.emre.launcher
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import com.emre.launcher.data.api.WeatherAPI
 import com.emre.launcher.data.repository.WeatherRepositoryImpl
 import com.emre.launcher.domain.usecase.GetWeatherUseCase
@@ -23,6 +26,7 @@ import com.emre.launcher.ui.views.MapsView
 import com.emre.launcher.ui.views.SpeedView
 import com.emre.launcher.ui.views.TimeCard
 import com.emre.launcher.ui.views.WeatherView
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -47,6 +51,20 @@ class MainActivity : ComponentActivity() {
         setContent {
             EmrLauncherTheme {
                 Box {
+                    val systemUiController = rememberSystemUiController()
+
+                    // Status bar stilini ve rengini ayarla
+                    systemUiController.setStatusBarColor(
+                        color = Color.Transparent, // Şeffaflık
+                        darkIcons = true // İkonlar koyu renk olsun
+                    )
+
+                    // Navigation bar rengini ayarla
+                    systemUiController.setNavigationBarColor(
+                        color = Color.Black, // Siyah
+                        darkIcons = false // İkonlar açık renk olsun
+                    )
+                    enableEdgeToEdge()
                     Image(
                         modifier = Modifier.fillMaxSize(),
                         painter = painterResource(R.drawable.wallp3),
@@ -54,8 +72,8 @@ class MainActivity : ComponentActivity() {
                         contentScale = ContentScale.FillBounds
                     )
                     Scaffold(
-                        modifier = Modifier.fillMaxSize(),
-                        containerColor = Color(0xbb050505)
+                        modifier = Modifier.fillMaxSize().padding(top = 80.dp),
+                        containerColor = Color(0x55050505)
                     ) { innerPadding ->
                         Row {
                             Column {
