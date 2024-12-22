@@ -49,7 +49,6 @@ class MainActivity : ComponentActivity() {
     private val weatherViewModel: WeatherViewModel by viewModels()
     private val carViewModel: CarViewModel by viewModels()
 
-    //private val idummyCallback = DummyCallbackImpl()
     private lateinit var mCarPropertyManager: CarPropertyManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,10 +80,6 @@ class MainActivity : ComponentActivity() {
         //carViewModel.toggleDoor("backLeft")
         //carViewModel.toggleDoor("backRight")
         mCarPropertyManager = Car.createCar(this).getCarManager(Car.PROPERTY_SERVICE) as CarPropertyManager
-
-        //val speed = mCarPropertyManager.getFloatProperty(VehicleProperty.PERF_VEHICLE_SPEED, 0)
-
-        //Log.d("vspeed", speed.toString())
 
         mCarPropertyManager.registerCallback(object : CarPropertyEventCallback {
             override fun onChangeEvent(carPropertyValue: CarPropertyValue<*>) {
@@ -178,5 +173,4 @@ class MainActivity : ComponentActivity() {
     private fun requestDangerousPermissions(permissions: List<String>) {
         requestPermissions(permissions.toTypedArray(), REQUEST_CODE_ASK_PERMISSIONS)
     }
-
 }
