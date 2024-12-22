@@ -41,6 +41,7 @@ android {
     }
     buildFeatures {
         compose = true
+        aidl = true
     }
 }
 
@@ -55,6 +56,10 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.accompanist.systemuicontroller)
+
+    implementation( "androidx.car.app:app:1.4.0")
+    implementation (files("libs/android.car.jar"))
+    implementation (files("libs/classes.jar"))
 
     implementation(libs.hilt.android.v2511)
     implementation(libs.hilt)

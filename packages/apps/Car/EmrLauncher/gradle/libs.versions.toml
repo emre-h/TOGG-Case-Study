@@ -1,6 +1,7 @@
 [versions]
 accompanistSystemuicontroller = "0.32.0"
 agp = "8.7.3"
+carLib = "2.0.0"
 converterGson = "2.9.0"
 hiltAndroid = "2.50"
 hiltAndroidCompiler = "2.51.1"
@@ -28,6 +29,7 @@ org-jetbrains-kotlin-android = "2.1.0"
 
 [libraries]
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
+androidx-car-lib = { module = "androidx.car:car-lib", version.ref = "carLib" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 
