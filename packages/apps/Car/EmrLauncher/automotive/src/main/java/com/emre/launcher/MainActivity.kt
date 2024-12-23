@@ -2,6 +2,7 @@ package com.emre.launcher
 
 import CarCard
 import android.car.Car
+import android.car.VehiclePropertyIds
 import android.car.hardware.CarPropertyValue
 import android.car.hardware.property.CarPropertyManager
 import android.car.hardware.property.CarPropertyManager.CarPropertyEventCallback
@@ -38,7 +39,6 @@ import com.emre.launcher.ui.theme.EmrLauncherTheme
 import com.emre.launcher.ui.viewmodels.CarViewModel
 import com.emre.launcher.ui.viewmodels.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import togg.emre.vehicle.V1_0.VehicleProperty
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -70,17 +70,14 @@ class MainActivity : ComponentActivity() {
 
         mCarPropertyManager.registerCallback(object : CarPropertyEventCallback {
             override fun onChangeEvent(carPropertyValue: CarPropertyValue<*>) {
-                Log.d(
-                    "vspeed",
-                    "VENDOR_TEST_500MS_COUNTER: onChangeEvent(" + carPropertyValue.value + ")"
-                )
-                speed.value = carPropertyValue.value as Float
+                Log.d("vspeed","onChangeEvent(" + carPropertyValue.value + ")")
+                speed.floatValue = carPropertyValue.value as Float
             }
 
             override fun onErrorEvent(propId: Int, zone: Int) {
-                Log.d("vspeed", "VENDOR_TEST_500MS_COUNTER: onErrorEvent($propId, $zone)")
+                Log.d("vspeed", "error")
             }
-        }, VehicleProperty.PERF_VEHICLE_SPEED, CarPropertyManager.SENSOR_RATE_NORMAL)
+        }, VehiclePropertyIds.PERF_VEHICLE_SPEED, CarPropertyManager.SENSOR_RATE_NORMAL)
     }
 
     @Composable

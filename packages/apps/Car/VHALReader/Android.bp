@@ -1,0 +1,12 @@
+android_app {
+    name: "VHALReader",
+    platform_apis: true,
+    srcs: ["automotive/src/main/**/*.java", "automotive/src/main/**/*.kt"],
+    resource_dirs: ["automotive/src/main/res"],
+    manifest: "automotive/src/main/AndroidManifest.xml",
+    certificate: "platform",
+    static_libs: [
+        "androidx.appcompat_appcompat",
+        "android.car",
+    ],   
+}

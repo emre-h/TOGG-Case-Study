@@ -1,0 +1,15 @@
+android_app_import {
+    name: "EmrLauncher",
+    apk: "EmrLauncher.apk",
+    certificate: "platform",
+    privileged: true,
+    dex_preopt: {
+        enabled: false,
+    },
+    overrides: [
+        "Launcher2",
+        "Launcher3",
+        "Launcher3QuickStep",
+        "CarLauncher",
+    ],
+}
