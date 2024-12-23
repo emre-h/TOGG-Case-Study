@@ -1,0 +1,13 @@
+android_app {
+    name: "CarUtility",
+    platform_apis: true,
+    srcs: ["automotive/src/main/**/*.java", "automotive/src/main/**/*.kt"],
+    resource_dirs: ["automotive/src/main/res"],
+    manifest: "automotive/src/main/AndroidManifest.xml",
+    privileged: true,
+    certificate: "platform",
+    static_libs: [
+        "androidx.appcompat_appcompat",
+        "android.car",
+    ],   
+}
