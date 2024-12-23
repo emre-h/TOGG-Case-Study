@@ -1,0 +1,293 @@
+diff --git a/res/layout/car_bottom_system_bar.xml b/res/layout/car_bottom_system_bar.xml
+index 293c27b..d263d2e 100644
+--- a/res/layout/car_bottom_system_bar.xml
++++ b/res/layout/car_bottom_system_bar.xml
+@@ -30,15 +30,6 @@
+         android:layout_height="wrap_content"
+         android:layoutDirection="ltr">
+ 
+-        <com.android.systemui.car.hvac.TemperatureControlView
+-            android:id="@+id/driver_hvac"
+-            android:layout_width="wrap_content"
+-            android:layout_height="match_parent"
+-            android:gravity="center_vertical"
+-            systemui:hvacAreaId="49">
+-            <include layout="@layout/adjustable_temperature_view"/>
+-        </com.android.systemui.car.hvac.TemperatureControlView>
+-
+         <LinearLayout
+             android:layout_width="wrap_content"
+             android:layout_height="match_parent"
+@@ -80,7 +71,7 @@
+                 systemui:componentNames="@string/config_appGridComponentName"
+                 systemui:highlightWhenSelected="true"
+                 systemui:icon="@drawable/car_ic_apps"
+-                systemui:intent="intent:#Intent;action=com.android.car.carlauncher.ACTION_APP_GRID;package=com.android.car.carlauncher;launchFlags=0x24000000;end"
++                systemui:intent="intent:#Intent;component=com.emre.launcher/.AppDrawerActivity;package=com.emre.launcher;launchFlags=0x24000000;end"
+                 systemui:clearBackStack="true"/>
+ 
+             <com.android.systemui.car.systembar.HvacButton
+@@ -105,16 +96,6 @@
+                 android:layout_weight="1"/>
+         </LinearLayout>
+ 
+-        <com.android.systemui.car.hvac.TemperatureControlView
+-            android:id="@+id/passenger_hvac"
+-            android:layout_width="wrap_content"
+-            android:layout_height="match_parent"
+-            android:layout_alignParentEnd="true"
+-            android:gravity="center_vertical"
+-            systemui:hvacAreaId="68">
+-            <include layout="@layout/adjustable_temperature_view"/>
+-        </com.android.systemui.car.hvac.TemperatureControlView>
+-
+     </RelativeLayout>
+ 
+     <LinearLayout
+diff --git a/res/layout/car_left_system_bar.xml b/res/layout/car_left_system_bar.xml
+index 21be0e9..9eae1d4 100644
+--- a/res/layout/car_left_system_bar.xml
++++ b/res/layout/car_left_system_bar.xml
+@@ -35,6 +35,19 @@
+         android:layout_weight="1"
+         android:animateLayoutChanges="true">
+ 
++        <com.android.systemui.car.systembar.CarSystemBarButton
++            android:id="@+id/appsGrid"
++            android:layout_height="wrap_content"
++            android:layout_width="match_parent"
++            android:src="@drawable/car_ic_apps"
++            android:background="?android:attr/selectableItemBackground"
++            android:paddingTop="30dp"
++            android:paddingBottom="30dp"
++            android:visibility="visible"
++            android:contentDescription="@string/system_bar_applications_label"
++            systemui:intent="intent:#Intent;component=com.emre.launcher/.AppDrawerActivity;end"
++            systemui:longIntent="intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.HOME;launchFlags=0x00008000;end"/>
++
+         <com.android.systemui.car.systembar.CarSystemBarButton
+             android:id="@+id/home"
+             android:layout_height="wrap_content"
+@@ -89,18 +102,6 @@
+             android:alpha="0.7"
+             android:contentDescription="@string/system_bar_notifications_label"/>
+ 
+-
+-        <com.android.systemui.statusbar.policy.Clock
+-            android:id="@+id/clock"
+-            android:textAppearance="@style/TextAppearance.StatusBar.Clock"
+-            android:layout_height="wrap_content"
+-            android:layout_width="match_parent"
+-            android:singleLine="true"
+-            android:paddingStart="@dimen/status_bar_clock_starting_padding"
+-            android:paddingEnd="@dimen/status_bar_clock_end_padding"
+-            android:gravity="center_horizontal"
+-            android:paddingBottom="20dp"/>
+-
+         <Space
+             android:layout_height="10dp"
+             android:layout_width="match_parent"/>
+diff --git a/res/layout/car_left_system_bar_unprovisioned.xml b/res/layout/car_left_system_bar_unprovisioned.xml
+index 38039f2..f4940c5 100644
+--- a/res/layout/car_left_system_bar_unprovisioned.xml
++++ b/res/layout/car_left_system_bar_unprovisioned.xml
+@@ -56,5 +56,7 @@
+             android:paddingBottom="30dp"
+             android:contentDescription="@string/system_bar_climate_control_label"
+             systemui:broadcast="true"/>
++            
+     </LinearLayout>
++
+ </com.android.systemui.car.systembar.CarSystemBarView>
+diff --git a/res/layout/car_top_system_bar.xml b/res/layout/car_top_system_bar.xml
+index 36eb88e..7afb6ca 100644
+--- a/res/layout/car_top_system_bar.xml
++++ b/res/layout/car_top_system_bar.xml
+@@ -35,8 +35,43 @@
+             android:layout_width="wrap_content"
+             android:layout_height="match_parent"
+             android:layout_centerVertical="true"
+-            android:layout_alignParentStart="true"
+-        />
++            android:layout_alignParentStart="true" />
++
++        <LinearLayout
++            android:id="@+id/statusbar_nav_container"
++            android:layout_width="wrap_content"
++            android:layout_height="match_parent"
++            android:layout_centerVertical="true"
++            android:layout_alignParentStart="true">
++
++            <com.android.systemui.car.systembar.CarSystemBarButton
++                android:id="@+id/home"
++                android:contentDescription="@string/system_bar_home_label"
++                style="@style/SystemBarButton"
++                systemui:componentNames="com.android.car.carlauncher/.CarLauncher"
++                systemui:highlightWhenSelected="true"
++                systemui:icon="@drawable/car_ic_home"
++                systemui:intent="intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.HOME;launchFlags=0x14000000;end"/>
++
++        <com.android.systemui.car.systembar.CarSystemBarButton
++                android:id="@+id/grid_nav"
++                android:contentDescription="@string/system_bar_applications_label"
++                style="@style/SystemBarButton"
++                systemui:componentNames="@string/config_appGridComponentName"
++                systemui:highlightWhenSelected="true"
++                systemui:icon="@drawable/car_ic_apps"
++                systemui:intent="intent:#Intent;component=com.emre.launcher/.AppDrawerActivity;package=com.emre.launcher;launchFlags=0x24000000;end"
++                systemui:clearBackStack="true"/>
++
++        <com.android.systemui.car.systembar.HvacButton
++                android:id="@+id/hvac"
++                android:contentDescription="@string/system_bar_climate_control_label"
++                style="@style/SystemBarButton"
++                systemui:highlightWhenSelected="true"
++                systemui:icon="@drawable/car_ic_hvac"
++                systemui:broadcast="true"/>
++            
++            </LinearLayout>
+ 
+         <FrameLayout
+             android:id="@+id/clock_container"
+@@ -45,6 +80,7 @@
+             android:paddingStart="@dimen/car_padding_2"
+             android:paddingEnd="@dimen/car_padding_2"
+             android:layout_centerInParent="true">
++            
+             <com.android.systemui.statusbar.policy.Clock
+                 android:id="@+id/clock"
+                 android:layout_width="wrap_content"
+@@ -55,6 +91,7 @@
+                 android:textAppearance="@style/TextAppearance.SystemBar.Clock"
+                 systemui:amPmStyle="gone"
+             />
++
+         </FrameLayout>
+ 
+         <LinearLayout
+diff --git a/res/layout/car_top_system_bar_unprovisioned.xml b/res/layout/car_top_system_bar_unprovisioned.xml
+index e6583c1..44d9a8f 100644
+--- a/res/layout/car_top_system_bar_unprovisioned.xml
++++ b/res/layout/car_top_system_bar_unprovisioned.xml
+@@ -86,8 +86,7 @@
+                     android:orientation="horizontal"
+                     android:layout_marginStart="@dimen/car_padding_2"
+                     android:layout_marginEnd="@dimen/car_padding_2"
+-                    android:gravity="center_vertical"
+-                >
++                    android:gravity="center_vertical">
+                     <ImageView
+                         android:id="@+id/user_avatar"
+                         android:layout_width="wrap_content"
+diff --git a/res/values/colors.xml b/res/values/colors.xml
+index 125fd00..1516813 100644
+--- a/res/values/colors.xml
++++ b/res/values/colors.xml
+@@ -43,7 +43,7 @@
+     <color name="system_bar_text_color">#FFFFFF</color>
+     <color name="system_bar_text_selected_color">#000000</color>
+     <color name="system_bar_text_unavailable_color">#B0B0B0</color>
+-    <drawable name="system_bar_background">#000000</drawable>
++    <drawable name="system_bar_background">#20121212</drawable>
+ 
+     <!-- colors for quick controls entry points icon   -->
+     <color name="car_quick_controls_icon_drawable_color">#FFFFFF</color>
+diff --git a/res/values/config.xml b/res/values/config.xml
+index eb5a9a4..688dd56 100644
+--- a/res/values/config.xml
++++ b/res/values/config.xml
+@@ -26,7 +26,7 @@
+     <bool name="config_enableTopSystemBar">true</bool>
+     <bool name="config_enableLeftSystemBar">false</bool>
+     <bool name="config_enableRightSystemBar">false</bool>
+-    <bool name="config_enableBottomSystemBar">true</bool>
++    <bool name="config_enableBottomSystemBar">false</bool>
+ 
+     <!-- Configure the type of each system bar. Each system bar must have a unique type. -->
+     <!--    STATUS_BAR = 0-->
+@@ -119,11 +119,11 @@
+     </string-array>
+ 
+     <!-- List of StatusIconControllers associated with icons to display for QC entry points.
+-         The icons will be added to the view in the order their controllers appear on this list. -->
+-    <string-array name="config_quickControlsEntryPointIconControllers" translatable="false">
+-        <item>com.android.systemui.car.statusicon.ui.BluetoothStatusIconController</item>
++         The icons will be added to the view in the order their controllers appear on this list. <item>com.android.systemui.car.statusicon.ui.BluetoothStatusIconController</item>
+         <item>com.android.systemui.car.statusicon.ui.SignalStatusIconController</item>
+-        <item>com.android.systemui.car.statusicon.ui.DisplayStatusIconController</item>
++        <item>com.android.systemui.car.statusicon.ui.DisplayStatusIconController</item> -->
++    <string-array name="config_quickControlsEntryPointIconControllers" translatable="false">
++       
+     </string-array>
+ 
+     <!-- List of StatusIconControllers associated with read-only status icons.
+diff --git a/src/com/android/systemui/car/systembar/CarSystemBar.java b/src/com/android/systemui/car/systembar/CarSystemBar.java
+index 9c6ee64..4f2a229 100644
+--- a/src/com/android/systemui/car/systembar/CarSystemBar.java
++++ b/src/com/android/systemui/car/systembar/CarSystemBar.java
+@@ -208,6 +208,7 @@ public class CarSystemBar implements CoreStartable, CommandQueue.Callbacks,
+ 
+         // Set up the initial icon state
+         int numIcons = result.mIcons.size();
++        
+         for (int i = 0; i < numIcons; i++) {
+             mCommandQueue.setIcon(result.mIcons.keyAt(i), result.mIcons.valueAt(i));
+         }
+@@ -215,7 +216,7 @@ public class CarSystemBar implements CoreStartable, CommandQueue.Callbacks,
+         mAutoHideController.setStatusBar(new AutoHideUiElement() {
+             @Override
+             public void synchronizeState() {
+-                // No op.
++                // No op
+             }
+ 
+             @Override
+diff --git a/src/com/android/systemui/car/systembar/CarSystemBarViewFactory.java b/src/com/android/systemui/car/systembar/CarSystemBarViewFactory.java
+index 09fb35a..abcda18 100644
+--- a/src/com/android/systemui/car/systembar/CarSystemBarViewFactory.java
++++ b/src/com/android/systemui/car/systembar/CarSystemBarViewFactory.java
+@@ -61,6 +61,8 @@ public class CarSystemBarViewFactory {
+     private final QuickControlsEntryPointsController mQuickControlsEntryPointsController;
+     private final ReadOnlyIconsController mReadOnlyIconsController;
+ 
++    private final boolean showStatusBarQuickControls = false;
++
+     /** Type of navigation bar to be created. */
+     private enum Type {
+         TOP,
+@@ -160,7 +162,12 @@ public class CarSystemBarViewFactory {
+                 /* root= */ null);
+ 
+         view.setupHvacButton();
+-        view.setupQuickControlsEntryPoints(mQuickControlsEntryPointsController, isSetUp);
++
++        // disable statusbar bluetooth, wifi, brightness
++        if (showStatusBarQuickControls) {
++            view.setupQuickControlsEntryPoints(mQuickControlsEntryPointsController, isSetUp);
++        }
++        
+         view.setupReadOnlyIcons(mReadOnlyIconsController);
+ 
+         // Include a FocusParkingView at the beginning. The rotary controller "parks" the focus here
+@@ -178,6 +185,9 @@ public class CarSystemBarViewFactory {
+ 
+     /** Calls onClick for the given Quick Controls class name. */
+     protected void callQuickControlsOnClickFromClassName(String clsName) {
++        if (!showStatusBarQuickControls) {
++            return;
++        }
+         View statusIconView = mQuickControlsEntryPointsController.getViewFromClassName(clsName);
+         if (statusIconView != null) {
+             statusIconView.callOnClick();
+@@ -186,7 +196,10 @@ public class CarSystemBarViewFactory {
+ 
+     /** Resets the cached Views. */
+     protected void resetCache() {
+-        mQuickControlsEntryPointsController.resetCache();
++        if (showStatusBarQuickControls) {
++            mQuickControlsEntryPointsController.resetCache();
++        }
++        
+         mReadOnlyIconsController.resetCache();
+         mCachedViewMap.clear();
+     }
