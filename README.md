@@ -1,5 +1,32 @@
 # TOGG Case Study
 
+Before starting, the environment information is provided below, taken after the `lunch` command.
+
+```bash
+PLATFORM_VERSION_CODENAME=REL
+PLATFORM_VERSION=13
+TARGET_PRODUCT=sdk_car_x86_64
+TARGET_BUILD_VARIANT=userdebug
+TARGET_BUILD_TYPE=release
+TARGET_ARCH=x86_64
+TARGET_ARCH_VARIANT=x86_64
+TARGET_2ND_ARCH=x86
+TARGET_2ND_ARCH_VARIANT=x86_64
+HOST_ARCH=x86_64
+HOST_2ND_ARCH=x86
+HOST_OS=linux
+HOST_OS_EXTRA=Linux-6.11.10-200.fc40.x86_64-x86_64-Fedora-Linux-40-(Workstation-Edition)
+HOST_CROSS_OS=windows
+HOST_CROSS_ARCH=x86
+HOST_CROSS_2ND_ARCH=x86_64
+HOST_BUILD_TYPE=release
+BUILD_ID=TQ3A.230805.001.S1
+OUT_DIR=out
+PRODUCT_SOONG_NAMESPACES=device/generic/goldfish device/generic/goldfish-opengl hardware/g
+oogle/camera hardware/google/camera/devices/EmulatedCamera device/generic/goldfish device/
+generic/goldfish-opengl
+```
+
 ## 1) Launcher and SystemUI customizations
 
 ### 1-a) EmrLauncher
@@ -13,6 +40,8 @@ EmrLauncher has been created to make a car infotainment system demo.
 **EmrLauncher:**
 
 <img src="pictures/emrlauncher.png" alt="drawing" width="700"/>
+
+**Info:** Door open or closed UI was rendered with `Canvas`.
 
 #### Source Code Structure & Soong Package Of EmrLauncher
 
@@ -264,7 +293,7 @@ class DeviceBootReceiver : BroadcastReceiver() {
 </receiver>
 ```
 
-### 3-) Creating a VHAL Module
+### 3-) Creating a VHAL
 
 Normally, this was not required within the case study, but a Linux character device driver was written to make it more realistic.
 VHAL writes the data obtained from this driver to the speed data in the system.
@@ -327,3 +356,141 @@ emulator -kernel <bzImage-path> -no-snapshot-load
 
 **NOTE:** `-no-snapshot-load` argument is important because emulator may not boot with new images.
 
+<img src="pictures/char-device.png" alt="drawing" width="700"/>
+
+As you can see, we have /dev/emr_vehicle.
+
+#### 3-b) Creating VHAL
+
+The VHAL in this case study has some parts from a third party repo which is based on Google's VHAL in AOSP source code. The third party part is about adding a "simulator" to change vehicle properties (`Simulator.cpp`) and thread utility (`Runnable.h`) code to run it in a endless loop.
+
+AOSP VHAL: `hardware/interfaces/automotive/vehicle/2.0/default/impl/vhal_v2_0`
+
+Reference Third Party VHAL: https://github.com/nkh-lab/aosp-ncar-vehicle-hal
+
+Final VHAL, takes speed value from `/dev/emr_vehicle` instead of taking/generating property values from somewhere. So added a sepolicy rule to access to `/dev/emr_vehicle`.
+
+**VHAL File Structure**
+```bash
+├── 1.0
+│   ├── Android.bp
+│   └── types.hal
+├── Android.bp
+├── sepolicy
+│   ├── file_contexts
+│   └── hal_togg_emre_vehicle.te
+├── src
+│   ├── DefaultConfig.h
+│   ├── Runnable.h
+│   ├── Simulator.cpp
+│   ├── Simulator.h
+│   ├── VehicleHalClient.cpp
+│   ├── VehicleHalClient.h
+│   ├── VehicleHalImpl.cpp
+│   ├── VehicleHalImpl.h
+│   └── VehicleService.cpp
+├── togg.emre.vehicle@1.0-service.rc
+└── togg.emre.vehicle@1.0-service.xml
+```
+
+**1.0 directory**:
+
+It has Android.bp to make a HAL package. It generates shared object and Java code to include things in `types.hal`.
+
+`types.hal`: Has `VehicleProperty` definitions that inherited from AOSP. Also has a custom vendor property that not used in this case study. For e.g. `Simulator.cpp` can access device properties by this file via including 
+```c
+#include "togg/emre/vehicle/1.0/types.h"
+```
+
+**Android.bp**:
+
+This one has Soong instructions to build complete custom VHAL. Includes shared libraries from AOSP and HAL package that mentioned above. The important part is it has "overrides" declaration which overrides AOSP default VHAL service and emulator VHAL service.
+
+**SELinux Policy**
+
+As it can be seen that `hal_togg_emre` domain is a VHAL domain. It has unique permissions for a VHAL. For e.g. it can't be registered by any other service manager. SELinux will deny it.
+
+Also it has rw, open, ioctl permissions to access `/dev/emr_vehicle`.
+
+```bash
+type hal_togg_emre, domain;
+type hal_togg_emre_exec, exec_type, vendor_file_type, file_type;
+
+init_daemon_domain(hal_togg_emre);
+
+hal_server_domain(hal_togg_emre, hal_vehicle)
+
+type emr_vehicle_device, dev_type;
+allow hal_togg_emre emr_vehicle_device:chr_file { read write open ioctl };
+```
+It can be seen that sepolicy has a char device rule to access it.
+
+`file_contexts` to define files that will be used by this VHAL:
+
+```bash
+/dev/emr_vehicle  u:object_r:emr_vehicle_device:s0
+/vendor/bin/hw/togg.emre.vehicle@1.0-service u:object_r:hal_togg_emre_exec:s0
+```
+
+**DefaultConfig.h**
+
+Based on `hardware/interfaces/automotive/vehicle/2.0/default/impl/vhal_v2_0/DefaultConfig.h`.
+Because the new VHAL overrides other internal VHALs. So it has to contain all properties in itself.
+
+**Runnable.h**
+
+Just a C++ thread utility to make code more clean & modular.
+
+**Simulator.cpp**
+
+Extends `VehicleHalClient` and `Runnable` classes. Because it is a VehicleHalClient and sets/gets vehicle property values. In this case study, it reads speed value from `/dev/emr_vehicle` and sets `VehicleProperty::PERF_VEHICLE_SPEED`.
+
+**VehicleService.cpp**
+
+It has main code. Registers as a service via `VehicleHalManager` with `VehicleHalImpl` which contains a `VehicleHalClient` as `Simulator`.
+
+Other C++ files are from AOSP VHAL implementation. They override AOSP VHAL functions.
+
+**togg.emre.vehicle@1.0-service.rc**
+
+It has service initialization definitons like service class, user, group. It has to be compatible with SELinux policy. Otherwise SELinux deny the service registration.
+
+**togg.emre.vehicle@1.0-service.xml**
+
+It has HAL definitions.
+
+### 4-) VHALReader
+
+This is a very simple app that reads speed value from the VHAL that created. EmrLauncher also does it but this was an another task in case study. So this app was created and named it "VHALReader".
+It has `android.car` library with jar file that taken from AOSP build like explained before.
+
+<img src="pictures/vhalreader.png" alt="drawing" width="700"/>
+
+**EmrLauncher:**
+
+Reading speed from `/dev/emr_vehicle` via VHAL that created before. (`togg.emre.vehicle@1.0-service`)
+
+<img src="pictures/char-device-with-launcher.png" alt="drawing" width="700"/>
+
+It has also a Soong file (Android.bp) and AOSP can build and install it to the system.
+
+Source code is located at `packages/apps/Car/VHALReader` in this repository.
+
+### 5-) Device Repo Changes For Emulator Build
+
+Those changes are added to emulator build. This part explains how.
+
+#### 5-a) SELinux Policy
+
+The VHAL service (`togg.emre.vehicle@1.0-service`) has a SELinux policy which file is `hal_togg_emre_vehicle.te`. It was located to `device/generic/car/common/sepolicy` and added `file_contexts` definitions there.
+
+#### 5-b) Packages
+
+All of the packages that explained before are added in the Makefile which located in `device/generic/car/common/car.mk`
+
+```bash
+PRODUCT_PACKAGES += togg.emre.vehicle@1.0-service
+PRODUCT_PACKAGES += EmrLauncher
+PRODUCT_PACKAGES += CarUtility
+PRODUCT_PACKAGES += VHALReader
+```
