@@ -226,6 +226,8 @@ The all apps button at status bar was connected to the AllAppsActivity of EmrLau
 
 **Note:** SystemUI has overlay feature that UI can be changed with XML overlay files. But using overlay is not very effective because Java code can not be changed by this way. Google recommends not to use it if you want to make changes over XML. But if your changes are only related with XML, it is better to use overlay.
 
+______________________________________
+
 ### 2-) CarUtility App
 
 Another task in this case study was creating a system application that starts at boot time. That was done by registering a `BroadcastReceiver` and starting a foreground service. Also this app was added to the AOSP source code with Soong blueprint file and its source code. AOSP builds and installs it to the system.
@@ -292,6 +294,8 @@ class DeviceBootReceiver : BroadcastReceiver() {
     </intent-filter>
 </receiver>
 ```
+
+______________________________________
 
 ### 3-) Creating a VHAL
 
@@ -459,6 +463,8 @@ It has service initialization definitons like service class, user, group. It has
 
 It has HAL definitions.
 
+______________________________________
+
 ### 4-) VHALReader
 
 This is a very simple app that reads speed value from the VHAL that created. EmrLauncher also does it but this was an another task in case study. So this app was created and named it "VHALReader".
@@ -475,6 +481,8 @@ Reading speed from `/dev/emr_vehicle` via VHAL that created before. (`togg.emre.
 It has also a Soong file (Android.bp) and AOSP can build and install it to the system.
 
 Source code is located at `packages/apps/Car/VHALReader` in this repository.
+
+______________________________________
 
 ### 5-) Device Repo Changes For Emulator Build
 
