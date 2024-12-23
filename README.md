@@ -40,7 +40,7 @@ android_app_import {
 }
 ```
 
-As can be seen, it has been developed with an effort to adhere to a clean architecture as much as possible using view models and file hierarchy. Used Kotlin and Compose libraries to build UI.
+As can be seen, it has been developed with an effort to adhere clean architecture as much as possible using view models and file hierarchy. Used Kotlin and Jetpack Compose to build UI.
 
 Codebase:
 ```bash
@@ -152,7 +152,7 @@ Otherwise the Android OS will get into bootloop if you don't. (Happened before)
 
 **Optional part:**
 The VHAL that written in this case study, has generated a java library to get `VehicleProperties`. This class has vehicle property enums to get data from system. Actually it is not necessary but if you added a custom vendor property, it should be added.
-You can also get custom property value without this using property integer value.
+You can also get custom property value via using property integer value without this class.
 
 **Fetching Live Car Property Data**
 
@@ -180,7 +180,7 @@ Then we can update our UI with it. This example was to get vehicle speed. Other 
 
 <img src="pictures/default.png" alt="drawing" width="700"/>
 
-**EmrLauncher:**
+**New SystemUI with modifications:**
 
 <img src="pictures/emrlauncher.png" alt="drawing" width="700"/>
 
@@ -194,6 +194,8 @@ The all apps button at status bar was connected to the AllAppsActivity of EmrLau
 -systemui:intent="intent:#Intent;action=com.android.car.carlauncher.ACTION_APP_GRID;package=com.android.car.carlauncher;launchFlags=0x24000000;end"
 +systemui:intent="intent:#Intent;component=com.emre.launcher/.AppDrawerActivity;package=com.emre.launcher;launchFlags=0x24000000;end"
 ```
+
+**Note:** SystemUI has overlay feature that UI can be changed with XML overlay files. But using overlay is not very effective because Java code can not be changed by this way. Google recommends not to use it if you want to make changes over XML. But if your changes are only related with XML, it is better to use overlay.
 
 ### 2-) CarUtility App
 
@@ -324,3 +326,4 @@ emulator -kernel <bzImage-path> -no-snapshot-load
 ```
 
 **NOTE:** `-no-snapshot-load` argument is important because emulator may not boot with new images.
+
