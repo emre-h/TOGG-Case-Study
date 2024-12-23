@@ -1,0 +1,14 @@
+package togg.emre.vehicle@1.0;
+
+import android.hardware.automotive.vehicle@2.0;
+
+/**
+ * Extension of VehicleProperty enum declared in Vehicle HAL 2.0
+ */
+enum VehicleProperty: android.hardware.automotive.vehicle@2.0::VehicleProperty {
+    VENDOR_TEST_EMRE_SPEED =  (
+      0x0004
+      | VehiclePropertyGroup:VENDOR
+      | VehiclePropertyType:INT32
+      | VehicleArea:GLOBAL),
+};

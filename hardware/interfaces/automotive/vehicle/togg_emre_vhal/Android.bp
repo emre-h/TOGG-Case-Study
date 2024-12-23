@@ -1,0 +1,30 @@
+cc_binary {
+    name: "togg.emre.vehicle@1.0-service",
+    init_rc: ["togg.emre.vehicle@1.0-service.rc"],
+    vintf_fragments: ["togg.emre.vehicle@1.0-service.xml"],
+    vendor: true,
+    relative_install_path: "hw",
+    overrides: [
+        "android.hardware.automotive.vehicle@2.0-service",
+        "android.hardware.automotive.vehicle@V1-emulator-service",
+    ],
+
+    cflags: [
+        "-Wall",
+        "-Werror",
+    ],
+
+    local_include_dirs: ["src"],
+
+    srcs: ["src/**/*.cpp"],
+
+    shared_libs: [
+        "libbase",
+        "liblog",
+        "libutils",
+        "libhidlbase",
+        "android.hardware.automotive.vehicle@2.0",
+        "android.hardware.automotive.vehicle@2.0-manager-lib",
+        "togg.emre.vehicle@1.0",
+    ]
+}

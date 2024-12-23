@@ -1,0 +1,17 @@
+hidl_package_root {
+    name: "togg.emre.vehicle",
+    path: "hardware/interfaces/automotive/vehicle/togg_emre_vhal",
+}
+
+hidl_interface {
+    name: "togg.emre.vehicle@1.0",
+    root: "togg.emre.vehicle",
+    srcs: [
+        "types.hal",
+    ],
+    interfaces: [
+        "android.hardware.automotive.vehicle@2.0",
+        "android.hidl.base@1.0",
+    ],
+    gen_java: true,
+}

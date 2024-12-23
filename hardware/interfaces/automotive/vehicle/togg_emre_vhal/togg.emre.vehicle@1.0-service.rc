@@ -1,0 +1,4 @@
+service togg.emre.vehicle@1.0-service /vendor/bin/hw/togg.emre.vehicle@1.0-service
+    class hal
+    user vehicle_network
+    group system
