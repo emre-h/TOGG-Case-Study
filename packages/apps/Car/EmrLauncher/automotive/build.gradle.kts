@@ -57,9 +57,8 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.accompanist.systemuicontroller)
 
-    implementation( "androidx.car.app:app:1.4.0")
-    implementation (files("libs/android.car.jar"))
-    implementation (files("libs/classes.jar"))
+    implementation (files("libs/android.car.jar")) // For including android.car library. Taken from AOSP build
+    implementation (files("libs/classes.jar")) // For including togg.emre.vehicle.VehicleProperties. Taken from AOSP build
 
     implementation(libs.hilt.android.v2511)
     implementation(libs.hilt)
@@ -72,18 +71,6 @@ dependencies {
     implementation (libs.converter.gson)
     implementation (libs.okhttp)
     implementation(libs.androidx.runtime.livedata)
-
-    implementation(libs.play.services.maps.v1900)
-    // KTX for the Maps SDK for Android library
-    implementation(libs.maps.ktx)
-    // KTX for the Maps SDK for Android Utility Library
-    implementation(libs.maps.utils.ktx)
-    // Google Maps Compose library
-    implementation(libs.maps.compose)
-    // Google Maps Compose utility library
-    implementation(libs.maps.compose.utils)
-    // Google Maps Compose widgets library
-    implementation(libs.maps.compose.widgets)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -5,7 +5,6 @@ import android.car.Car
 import android.car.hardware.CarPropertyValue
 import android.car.hardware.property.CarPropertyManager
 import android.car.hardware.property.CarPropertyManager.CarPropertyEventCallback
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -23,7 +22,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -64,17 +62,6 @@ class MainActivity : ComponentActivity() {
         }
         weatherViewModel.loadWeather("Istanbul")
 
-
-        // Request dangerous permissions only
-        val dangPermToRequest = checkDangerousPermissions()
-
-        if (dangPermToRequest.isEmpty()) {
-
-        } else {
-            requestDangerousPermissions(dangPermToRequest)
-            // CB:
-            // onRequestPermissionsResult()
-        }
         carViewModel.toggleDoor("frontLeft")
         //carViewModel.toggleDoor("frontRight")
         //carViewModel.toggleDoor("backLeft")
@@ -153,24 +140,5 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
-
-    private fun checkDangerousPermissions(): List<String> {
-        val permissions: MutableList<String> = ArrayList()
-
-        if (checkSelfPermission(Car.PERMISSION_SPEED) != PackageManager.PERMISSION_GRANTED) {
-            permissions.add(Car.PERMISSION_SPEED)
-        }
-        if (checkSelfPermission(Car.PERMISSION_ENERGY) != PackageManager.PERMISSION_GRANTED) {
-            permissions.add(Car.PERMISSION_ENERGY)
-        }
-
-        return permissions
-    }
-
-    val REQUEST_CODE_ASK_PERMISSIONS: Int = 1
-
-    private fun requestDangerousPermissions(permissions: List<String>) {
-        requestPermissions(permissions.toTypedArray(), REQUEST_CODE_ASK_PERMISSIONS)
     }
 }
