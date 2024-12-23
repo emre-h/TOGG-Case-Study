@@ -261,3 +261,66 @@ class DeviceBootReceiver : BroadcastReceiver() {
     </intent-filter>
 </receiver>
 ```
+
+### 3-) Creating a VHAL Module
+
+Normally, this was not required within the case study, but a Linux character device driver was written to make it more realistic.
+VHAL writes the data obtained from this driver to the speed data in the system.
+
+#### 3-a) Creating A Char Device Driver & Building The Emulator Kernel
+
+Building emulator kernel reference: https://source.android.com/docs/setup/build/building-kernels
+
+**Fetching kernel source**
+
+```bash
+mkdir android-kernel && cd android-kernel
+repo init -u https://android.googlesource.com/kernel/manifest -b common-android13-5.15 --depth=1
+repo sync
+```
+
+Used common-android13-5.15 kernel since the AOSP/AAOS version is 13.
+
+**Adding char device driver code to the kernel**
+
+Kernel source code is located at `common` folder in this repo. So driver can be added in:
+`drivers/misc`
+
+Char device driver file:
+[kernel/drivers/misc/emr_vehicle.c](kernel/drivers/misc/emr_vehicle.c)
+
+Added driver option to the **drivers/misc/Kconfig**
+```bash
+config EMR_VEHICLE
+    tristate "EMRVehicle Test Driver"
+    default y
+    help
+      This is a simple driver to create /dev/emr_vehicle for testing purposes.
+
+```
+
+Added Makefile command to the **drivers/misc/Makefile**
+```makefile
+obj-$(CONFIG_EMR_VEHICLE)   += emr_vehicle.o
+```
+Or it can be just added for not dealing with defconfig files:
+```makefile
+obj-y += emr_vehicle.o
+```
+**Building The Kernel**
+
+Built it with:
+```bash
+BUILD_CONFIG=common-modules/virtual-device/build.config.virtual_device.x86_64 build/build.sh
+```
+
+After compilation, kernel image is located at:
+`out/android13-5.15/dist/bzImage`
+
+Emulator can boot with new kernel using this command:
+
+```bash
+emulator -kernel <bzImage-path> -no-snapshot-load
+```
+
+**NOTE:** `-no-snapshot-load` argument is important because emulator may not boot with new images.
