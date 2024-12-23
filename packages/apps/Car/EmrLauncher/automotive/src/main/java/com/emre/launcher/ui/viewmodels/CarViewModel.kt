@@ -1,7 +1,5 @@
 package com.emre.launcher.ui.viewmodels
 
-// Presentation Layer
-
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel

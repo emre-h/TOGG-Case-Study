@@ -19,6 +19,7 @@ composeBom = "2024.04.01"
 mapsComposeVersion = "4.4.1"
 mapsKtx = "5.0.0"
 mapsUtilsKtx = "5.0.0"
+mockitoCore = "4.0.0'"
 okhttp = "4.9.1"
 playServicesMaps = "18.2.0"
 playServicesMapsVersion = "19.0.0"
@@ -61,6 +62,7 @@ maps-compose-utils = { module = "com.google.maps.android:maps-compose-utils", ve
 maps-compose-widgets = { module = "com.google.maps.android:maps-compose-widgets", version.ref = "mapsComposeVersion" }
 maps-ktx = { module = "com.google.maps.android:maps-ktx", version.ref = "mapsKtx" }
 maps-utils-ktx = { module = "com.google.maps.android:maps-utils-ktx", version.ref = "mapsUtilsKtx" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
 play-services-maps-v1900 = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMapsVersion" }

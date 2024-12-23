@@ -9,38 +9,19 @@
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.BIND_VEHICLE_SERVICE" />
+
+    <!-- Car permissions -->
     <uses-permission android:name="android.car.permission.CAR_INFO" />
-    <!-- GEAR_SELECTION -->
     <uses-permission android:name="android.car.permission.CAR_POWERTRAIN" />
-    <!-- FUEL_DOOR_OPEN -->
     <uses-permission android:name="android.car.permission.CAR_ENERGY_PORTS" />
-    <!--
-    android:protectionLevel="dangerous"
-    Should be additionally requested in runtime by android.app.Activity.requestPermissions()
-    -->
-    <!-- PERF_VEHICLE_SPEED -->
     <uses-permission android:name="android.car.permission.CAR_SPEED" />
-    <!-- EV_BATTERY_LEVEL -->
     <uses-permission android:name="android.car.permission.CAR_ENERGY" />
-
-    <!--
-    android:protectionLevel="signature|privileged"
-    Are granted at install time if requested in the manifest (here) and the signature of your app
-    matches the signature of the app declaring the permissions.
-    -->
-    <!-- FUEL_DOOR_OPEN for setBooleanProperty() -->
     <uses-permission android:name="android.car.permission.CONTROL_CAR_ENERGY_PORTS" />
-
-    <!-- For Vendor properties -->
     <uses-permission android:name="android.car.permission.CAR_VENDOR_EXTENSION" />
 
     <uses-feature
         android:name="android.hardware.type.automotive"
         android:required="true" />
-
-    <meta-data
-        android:name="com.google.android.geo.API_KEY"
-        android:value="AIzaSyD6xe8X7UF0zCKxLU1O2zJYqSBtcpjxOVY" />
 
     <application
         android:name=".EmrLauncherApplication"
@@ -63,7 +44,6 @@
             android:theme="@style/Theme.EmrLauncher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.HOME" />

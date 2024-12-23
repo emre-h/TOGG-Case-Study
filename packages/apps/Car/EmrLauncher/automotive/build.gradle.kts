@@ -64,8 +64,6 @@ dependencies {
     implementation(libs.hilt)
     kapt(libs.hilt.compiler)
 
-    implementation(libs.kotlinx.coroutines.android)
-
     // Retrofit (API)
     implementation (libs.retrofit)
     implementation (libs.converter.gson)
