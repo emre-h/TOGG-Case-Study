@@ -1,3 +1,154 @@
+
+project device/generic/car/
+diff --git a/common/car.mk b/common/car.mk
+index 5fea1f7..122b243 100644
+--- a/common/car.mk
++++ b/common/car.mk
+@@ -93,6 +93,16 @@ PRODUCT_COPY_FILES += \
+ # Additional selinux policy
+ BOARD_SEPOLICY_DIRS += device/generic/car/common/sepolicy
+ 
++PRODUCT_PACKAGES += togg.emre.vehicle@1.0-service
++PRODUCT_PACKAGES += EmrLauncher
++PRODUCT_PACKAGES += CarUtility
++PRODUCT_PACKAGES += VHALReader
++
++PRODUCT_DEFAULT_ACTIVITY = com.emre.launcher/.MainActivity
++
++PRODUCT_PROPERTY_OVERRIDES += \
++    persist.sys.homescreen=com.emre.launcher/.MainActivity
++
+ #
+ # Special settings for GSI releasing
+ #
+diff --git a/common/sepolicy/file_contexts b/common/sepolicy/file_contexts
+index 5737b92..93037c9 100644
+--- a/common/sepolicy/file_contexts
++++ b/common/sepolicy/file_contexts
+@@ -1,2 +1,6 @@
+ # Audio HAL
+ /vendor/bin/hw/android\.hardware\.audio\.service-caremu u:object_r:hal_audio_caremu_exec:s0
++
++/dev/emr_vehicle  u:object_r:emr_vehicle_device:s0
++/vendor/bin/hw/togg.emre.vehicle@1.0-service u:object_r:hal_togg_emre_exec:s0
++
+diff --git a/emulator/usbpt/bluetooth/btusb/sepolicy/domain.te b/emulator/usbpt/bluetooth/btusb/sepolicy/domain.te
+index 448f1c3..c401b61 100644
+--- a/emulator/usbpt/bluetooth/btusb/sepolicy/domain.te
++++ b/emulator/usbpt/bluetooth/btusb/sepolicy/domain.te
+@@ -1,4 +1,4 @@
+-allow domain qemu_device:chr_file rw_file_perms;
++#allow domain qemu_device:chr_file rw_file_perms;
+ 
+-get_prop(domain, vendor_qemu_prop)
+-get_prop(domain, vendor_build_prop)
++#get_prop(domain, vendor_qemu_prop)
++#get_prop(domain, vendor_build_prop)
+diff --git a/emulator/usbpt/bluetooth/btusb/sepolicy/property_contexts b/emulator/usbpt/bluetooth/btusb/sepolicy/property_contexts
+index 224ca7f..fcc4902 100644
+--- a/emulator/usbpt/bluetooth/btusb/sepolicy/property_contexts
++++ b/emulator/usbpt/bluetooth/btusb/sepolicy/property_contexts
+@@ -1 +1 @@
+-vendor.qemu.preferred.bt.service u:object_r:vendor_qemu_prop:s0
++#vendor.qemu.preferred.bt.service u:object_r:vendor_qemu_prop:s0
+
+project device/generic/common/
+diff --git a/BoardConfigGkiCommon.mk b/BoardConfigGkiCommon.mk
+index c7970d7..fd69ad6 100644
+--- a/BoardConfigGkiCommon.mk
++++ b/BoardConfigGkiCommon.mk
+@@ -34,6 +34,8 @@ BOARD_AVB_INIT_BOOT_ROLLBACK_INDEX_LOCATION := 3
+ # Sets boot SPL.
+ BOOT_SECURITY_PATCH = $(PLATFORM_SECURITY_PATCH)
+ 
++BOARD_SEPOLICY_DIRS += device/generic/common/sepolicy
++
+ # Boot image with kernel only (no ramdisk)
+ BOARD_BOOT_HEADER_VERSION := 4
+ BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOT_HEADER_VERSION)
+diff --git a/gki_common.mk b/gki_common.mk
+index 42b9a6c..6faf8b8 100644
+--- a/gki_common.mk
++++ b/gki_common.mk
+@@ -40,3 +40,5 @@ PRODUCT_BUILD_DEBUG_VENDOR_BOOT_IMAGE := false
+ 
+ MODULE_BUILD_FROM_SOURCE := true
+ PRODUCT_EXPORT_BOOT_IMAGE_TO_DIST := true
++
++#BOARD_SEPOLICY_DIRS += device/generic/common/sepolicy
+
+project device/generic/goldfish/
+diff --git a/sepolicy/common/domain.te b/sepolicy/common/domain.te
+index 2e3cd77..e36d265 100644
+--- a/sepolicy/common/domain.te
++++ b/sepolicy/common/domain.te
+@@ -1,3 +1,9 @@
+ allow domain qemu_device:chr_file rw_file_perms;
+ 
++#allow emre_vhal_service emre_vhal_service_exec:dir { ioctl };
++#allow emre_vhal_service device:chr_file { open read write };
++#allow emre_vhal_service self:capability { dac_override };
++#allow emre_vhal_service vendor_file_type:file { read open execute };
++
++
+ get_prop(domain, vendor_qemu_prop)
+diff --git a/x86_64-kernel.mk b/x86_64-kernel.mk
+index ea146a3..3267ac5 100644
+--- a/x86_64-kernel.mk
++++ b/x86_64-kernel.mk
+@@ -2,8 +2,11 @@ TARGET_KERNEL_USE ?= 5.15
+ 
+ KERNEL_ARTIFACTS_PATH := kernel/prebuilts/$(TARGET_KERNEL_USE)/x86_64
+ 
++#VIRTUAL_DEVICE_KERNEL_MODULES_PATH := \
++#    kernel/prebuilts/common-modules/virtual-device/$(TARGET_KERNEL_USE)/x86-64
++
+ VIRTUAL_DEVICE_KERNEL_MODULES_PATH := \
+-    kernel/prebuilts/common-modules/virtual-device/$(TARGET_KERNEL_USE)/x86-64
++    /home/emre/android-kernel2/out/android13-5.15/dist
+ 
+ # The list of modules to reach the second stage. For performance reasons we
+ # don't want to put all modules into the ramdisk.
+@@ -28,4 +31,6 @@ BOARD_VENDOR_KERNEL_MODULES := \
+ BOARD_VENDOR_KERNEL_MODULES_BLOCKLIST_FILE := \
+     device/generic/goldfish/kernel_modules.blocklist
+ 
+-EMULATOR_KERNEL_FILE := $(KERNEL_ARTIFACTS_PATH)/kernel-$(TARGET_KERNEL_USE)
++#EMULATOR_KERNEL_FILE := $(KERNEL_ARTIFACTS_PATH)/kernel-$(TARGET_KERNEL_USE)
++
++EMULATOR_KERNEL_FILE := $(VIRTUAL_DEVICE_KERNEL_MODULES_PATH)/bzImage
+
+project frameworks/base/
+diff --git a/data/etc/privapp-permissions-platform.xml b/data/etc/privapp-permissions-platform.xml
+index e1c9b3c1..6e72838a 100644
+--- a/data/etc/privapp-permissions-platform.xml
++++ b/data/etc/privapp-permissions-platform.xml
+@@ -535,6 +535,23 @@ applications that come with the platform
+         <permission name="android.permission.SEND_SAFETY_CENTER_UPDATE" />
+     </privapp-permissions>
+ 
++    <privapp-permissions package="com.emre.launcher">
++        <permission name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" />
++        <permission name="android.permission.ACCESS_NOTIFICATION_POLICY" />
++        <permission name="android.permission.RECEIVE_BOOT_COMPLETED" />
++        <permission name="android.permission.MEDIA_CONTENT_CONTROL" />
++        <permission name="android.permission.QUERY_ALL_PACKAGES" />
++        <permission name="android.permission.INTERNET" />
++        <permission name="android.permission.BIND_VEHICLE_SERVICE" />
++        <permission name="android.car.permission.CAR_INFO" />
++        <permission name="android.car.permission.CAR_POWERTRAIN" />
++        <permission name="android.car.permission.CAR_ENERGY_PORTS" />
++        <permission name="android.car.permission.CAR_SPEED" />
++        <permission name="android.car.permission.CAR_ENERGY" />
++        <permission name="android.car.permission.CONTROL_CAR_ENERGY_PORTS" />
++        <permission name="android.car.permission.CAR_VENDOR_EXTENSION" />
++    </privapp-permissions>
++
+     <privapp-permissions package="com.android.bips">
+         <permission name="android.permission.SUBSTITUTE_SHARE_TARGET_APP_NAME_AND_ICON"/>
+     </privapp-permissions>
+
+project packages/apps/Car/SystemUI/
 diff --git a/res/layout/car_bottom_system_bar.xml b/res/layout/car_bottom_system_bar.xml
 index 293c27b..d263d2e 100644
 --- a/res/layout/car_bottom_system_bar.xml
@@ -291,3 +442,14 @@ index 09fb35a..abcda18 100644
          mReadOnlyIconsController.resetCache();
          mCachedViewMap.clear();
      }
+
+project system/core/
+diff --git a/rootdir/init.rc b/rootdir/init.rc
+index 2b53d88..44a448a 100644
+--- a/rootdir/init.rc
++++ b/rootdir/init.rc
+@@ -1332,3 +1332,4 @@ on property:persist.device_config.mglru_native.lru_gen_config=core_and_nonleaf_y
+   write /sys/kernel/mm/lru_gen/enabled 5
+ on property:persist.device_config.mglru_native.lru_gen_config=all
+   write /sys/kernel/mm/lru_gen/enabled 7
++  
