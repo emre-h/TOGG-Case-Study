@@ -79,7 +79,7 @@ android_app_import {
 
 As can be seen, it has been developed with an effort to adhere clean architecture as much as possible using view models and file hierarchy. Used Kotlin and Jetpack Compose to build UI.
 
-Codebase:
+Kotlin structure:
 ```bash
 src/main/java/com/emre/launcher/
 ├── AppDrawerActivity.kt
