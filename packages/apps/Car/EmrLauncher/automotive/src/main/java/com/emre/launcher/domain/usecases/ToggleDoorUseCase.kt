@@ -2,7 +2,7 @@ package com.emre.launcher.domain.usecases
 
 import com.emre.launcher.data.models.Car
 
-// Use Case to toggle a door's state
+// Use Case to toggle doors states
 open class ToggleDoorUseCase {
     open fun execute(car: Car, door: String): Car {
         return when (door) {

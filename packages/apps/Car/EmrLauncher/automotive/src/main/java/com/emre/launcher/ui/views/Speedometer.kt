@@ -16,17 +16,17 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun Speedometer(
-    currentSpeed: Float, // Anlık hız (0 ile maxSpeed arasında)
-    maxSpeed: Float = 240f, // Maksimum hız
-    modifier: Modifier = Modifier.size(160.dp) // Boyut
+    currentSpeed: Float,
+    maxSpeed: Float = 240f,
+    modifier: Modifier = Modifier.size(160.dp)
 ) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
-            val startAngle = 135f // Başlangıç açısı
-            val sweepAngle = 270f // Yayın kapsadığı açı
+            val startAngle = 135f // Initial arc angle
+            val sweepAngle = 270f // Total arc angle
 
             drawArc(
                 color = Color(0xffa8dadc),
@@ -36,7 +36,6 @@ fun Speedometer(
                 style = Stroke(width = 15.dp.toPx())
             )
 
-            // Dolgu yay (Anlık hız için)
             val speedSweepAngle = (currentSpeed / maxSpeed) * sweepAngle
             drawArc(
                 color = Color(0xff1d3557),
@@ -47,7 +46,6 @@ fun Speedometer(
             )
         }
 
-        // Hız değeri
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

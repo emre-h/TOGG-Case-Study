@@ -32,23 +32,6 @@ import com.emre.launcher.data.models.Car
 
 @Composable
 fun CarView(carState: Car) {
-    val infiniteTransition = rememberInfiniteTransition()
-    val alpha by infiniteTransition.animateFloat(
-        initialValue = 0.2f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1000, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        ), label = ""
-    )
-
-    val customFont = ResourcesCompat.getFont(LocalContext.current, R.font.gotham)
-    val warningTextPaint = android.graphics.Paint().apply {
-        color = Color.Black.toArgb()
-        textSize = 12.sp.value// Convert sp to pixels
-        typeface = customFont
-    }
-
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -64,8 +47,6 @@ fun CarView(carState: Car) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             val carWidth = size.width
             val carHeight = size.height
-
-            val indicatorRadius = carWidth * 0.05f
 
             if (carState.isFrontLeftDoorOpen) {
                 drawLine(
@@ -137,12 +118,4 @@ fun CarView(carState: Car) {
             }
         }
     }
-}
-
-fun DrawScope.drawFlashingIndicator(center: Offset, radius: Float, alpha: Float) {
-    drawCircle(
-        color = Color.Red.copy(alpha = alpha),
-        center = center,
-        radius = radius
-    )
 }

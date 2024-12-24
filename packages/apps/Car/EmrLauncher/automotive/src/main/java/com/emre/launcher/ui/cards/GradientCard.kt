@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun GradientCard(
-    colors: List<Color>, // Gradient renkleri
+    colors: List<Color>,
     modifier: Modifier = Modifier,
     content: @Composable BoxScope.() -> Unit,
 ) {
@@ -33,10 +33,10 @@ fun GradientCard(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    brush = Brush.linearGradient(colors) // Gradient arka plan
+                    brush = Brush.linearGradient(colors)
                 ),
             contentAlignment = Alignment.Center,
-            content = content // İçeriği Box'un içine koy
+            content = content
         )
     }
 }
