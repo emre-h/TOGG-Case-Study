@@ -247,7 +247,7 @@ Then we can update our UI with it. This example was to get vehicle speed. Other 
 
 It can be seen that removed bottom navigation bar and removed Bluetooth, Wi-Fi and brightness quick action buttons. Also made status bar transparent and added home, all apps and HVAC button to the top left side.
 
-SystemUI file changes can be discovered in this repo under `patches/SystemUI.patch`.
+SystemUI file changes can be discovered in this repo under `patches/aaos-emre.patch`.
 
 The all apps button at status bar was connected to the AllAppsActivity of EmrLauncher by this change:
 
