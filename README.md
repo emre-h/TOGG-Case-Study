@@ -165,6 +165,7 @@ static_libs: [
 ```
 
 Or it can be added by copying `android.car.jar` from AOSP build outputs and adding it to build.gradle.kts or build.gradle.
+
 Path:
 ```bash
 out/target/product/emulator_car_x86_64/system/framework/android.car.jar
