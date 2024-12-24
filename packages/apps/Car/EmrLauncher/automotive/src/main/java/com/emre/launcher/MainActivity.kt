@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -64,15 +63,11 @@ class MainActivity : ComponentActivity() {
         weatherViewModel.loadWeather("Istanbul")
 
         carViewModel.toggleDoor("frontLeft")
-        //carViewModel.toggleDoor("frontRight")
-        //carViewModel.toggleDoor("backLeft")
-        //carViewModel.toggleDoor("backRight")
         mCarPropertyManager = Car.createCar(this).getCarManager(Car.PROPERTY_SERVICE) as CarPropertyManager
 
         mCarPropertyManager.registerCallback(object : CarPropertyEventCallback {
             override fun onChangeEvent(carPropertyValue: CarPropertyValue<*>) {
                 Log.d("vspeed","onChangeEvent(" + carPropertyValue.value + ")")
-                //speed.floatValue = carPropertyValue.value as Float
                 speedViewModel.setSpeed(carPropertyValue.value as Float)
             }
 

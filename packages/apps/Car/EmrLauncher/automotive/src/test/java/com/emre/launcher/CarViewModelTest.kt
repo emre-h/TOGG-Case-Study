@@ -29,7 +29,7 @@ class CarViewModelTest {
     }
 
     @Test
-    fun `toggle front left door updates state correctly`() {
+    fun toggleLeftDoor() {
         // Başlangıç durumu
         val initialCar = carViewModel.carState.value
         assertEquals(Car(), initialCar)
@@ -46,7 +46,7 @@ class CarViewModelTest {
     }
 
     @Test
-    fun `toggle multiple doors updates state correctly`() {
+    fun toggleMultipleDoor() {
         assertEquals(Car(), carViewModel.carState.value)
 
         // Open frontLeft and backRight
@@ -68,14 +68,9 @@ class CarViewModelTest {
     }
 
     @Test
-    fun `invalid door name does not change state`() {
-        // Başlangıç durumu
+    fun toggleInvalidDoor() {
         val initialCar = carViewModel.carState.value
-
-        // Geçersiz bir kapı adı ver
         carViewModel.toggleDoor("invalidDoor")
-
-        // Durumun değişmediğini doğrula
         assertEquals(initialCar, carViewModel.carState.value)
     }
 }
