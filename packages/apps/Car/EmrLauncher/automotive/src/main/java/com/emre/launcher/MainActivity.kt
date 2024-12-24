@@ -37,15 +37,16 @@ import com.emre.launcher.ui.cards.TimeCard
 import com.emre.launcher.ui.cards.WeatherView
 import com.emre.launcher.ui.theme.EmrLauncherTheme
 import com.emre.launcher.ui.viewmodels.CarViewModel
+import com.emre.launcher.ui.viewmodels.SpeedViewModel
 import com.emre.launcher.ui.viewmodels.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     // Get the ViewModel instances using Hilt
-    private val speed = mutableFloatStateOf(0f)
     private val weatherViewModel: WeatherViewModel by viewModels()
     private val carViewModel: CarViewModel by viewModels()
+    private val speedViewModel: SpeedViewModel by viewModels()
 
     private lateinit var mCarPropertyManager: CarPropertyManager
 
@@ -71,7 +72,8 @@ class MainActivity : ComponentActivity() {
         mCarPropertyManager.registerCallback(object : CarPropertyEventCallback {
             override fun onChangeEvent(carPropertyValue: CarPropertyValue<*>) {
                 Log.d("vspeed","onChangeEvent(" + carPropertyValue.value + ")")
-                speed.floatValue = carPropertyValue.value as Float
+                //speed.floatValue = carPropertyValue.value as Float
+                speedViewModel.setSpeed(carPropertyValue.value as Float)
             }
 
             override fun onErrorEvent(propId: Int, zone: Int) {
@@ -124,7 +126,7 @@ class MainActivity : ComponentActivity() {
 
                         SpeedCard(modifier = Modifier
                             .width(screenWidth * 0.25.dp)
-                            .height(screenHeight * 0.34.dp), speed.floatValue)
+                            .height(screenHeight * 0.34.dp), speedViewModel.speedState.value)
                         EnergyCard(modifier = Modifier
                             .width(screenWidth * 0.25.dp)
                             .height(screenHeight * 0.34.dp))
