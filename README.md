@@ -217,7 +217,7 @@ You can also get custom property value via using property integer value without 
 
 **Fetching Live Car Property Data**
 
-The VHAL written in this case study, changes `PERF_VEHICLE_SPEED` value based on char device output. It is like reading a value from a driver. It will be explained later in this document.
+The VHAL written in this case study, changes `PERF_VEHICLE_SPEED` value based on device device output. It is like reading a value from a driver. It will be explained later in this document.
 
 Since we have `android.car` library in our project, we can register a callback to get car data:
 
@@ -331,10 +331,10 @@ ______________________________________
 
 ### 3-) Creating a VHAL
 
-Normally, this was not required within the case study, but a Linux character device driver was written to make it more realistic.
+Normally, this was not required within the case study, but a Linux device driver was written to make it more realistic.
 VHAL writes the data obtained from this driver to the speed data in the system.
 
-#### 3-a) Creating A Char Device Driver & Building The Emulator Kernel
+#### 3-a) Creating A Device Driver & Building The Emulator Kernel
 
 Building emulator kernel reference: https://source.android.com/docs/setup/build/building-kernels
 
@@ -348,12 +348,12 @@ repo sync
 
 Used common-android13-5.15 kernel since the AOSP/AAOS version is 13.
 
-**Adding char device driver code to the kernel**
+**Adding Device Driver Code To The Kernel**
 
 Kernel source code is located at `common` folder in this repo. So driver can be added in:
-`drivers/misc`
+`drivers/misc`.
 
-Char device driver file:
+Device driver file:
 [kernel/drivers/misc/emr_vehicle.c](kernel/drivers/misc/emr_vehicle.c)
 
 Added driver option to the **drivers/misc/Kconfig**
@@ -502,7 +502,7 @@ emulator_car_x86_64:/ # ls -la /dev/emr_vehicle
 crw------- 1 root root 237,   0 2024-12-24 09:16 /dev/emr_vehicle
 emulator_car_x86_64:/ #
 ```
-The VHAL services need communicate with another system service that running as root to get value from char devices. Unfortunately there was no time to develop such a service. Therefore, permission of driver must be set with `chmod 666 /dev/emr_vehicle`.
+The VHAL services need communicate with another system service that running as root to get value from device devices. Unfortunately there was no time to develop such a service. Therefore, permission of driver must be set with `chmod 666 /dev/emr_vehicle`.
 This way, this VHAL case study can demonstrate communicating with a driver.
 ______________________________________
 
