@@ -1,6 +1,6 @@
 //
 // Based on hardware/interfaces/automotive/vehicle/2.0/default/impl/vhal_v2_0/DefaultConfig.h
-// + VENDOR properties
+// + VENDOR properties (VENDOR_TEST_EMRE_SPEED)
 //
 
 #pragma once

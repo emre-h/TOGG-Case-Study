@@ -5,5 +5,5 @@ init_daemon_domain(hal_togg_emre);
 
 hal_server_domain(hal_togg_emre, hal_vehicle)
 
-# For changing VHAL property via System Property 
-get_prop(hal_togg_emre, debug_prop)
+type emr_vehicle_device, dev_type;
+allow hal_togg_emre emr_vehicle_device:chr_file { read write open ioctl };

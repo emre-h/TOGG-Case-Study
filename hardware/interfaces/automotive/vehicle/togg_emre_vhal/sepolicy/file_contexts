@@ -1,1 +1,2 @@
 /vendor/bin/hw/togg.emre.vehicle@1.0-service     u:object_r:hal_togg_emre_exec:s0
+/dev/emr_vehicle  u:object_r:emr_vehicle_device:s0

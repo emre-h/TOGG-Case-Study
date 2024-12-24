@@ -495,11 +495,20 @@ It has service initialization definitons like service class, user, group. It has
 
 It has HAL definitions.
 
+**IMPORTANT NOTE:** Normally `togg.emre.vehicle@1.0-service` or any other VHAL service can't directly access to `/dev/emr_vehicle` because of file system permissions even SELinux allows it. Kernel creates the driver with root level permissions.
+
+```bash
+emulator_car_x86_64:/ # ls -la /dev/emr_vehicle                                
+crw------- 1 root root 237,   0 2024-12-24 09:16 /dev/emr_vehicle
+emulator_car_x86_64:/ #
+```
+The VHAL services need communicate with another system service that running as root to get value from char devices. Unfortunately there was no time to develop such a service. Therefore, permission of driver must be set with `chmod 666 /dev/emr_vehicle`.
+This way, this VHAL case study can demonstrate communicating with a driver.
 ______________________________________
 
 ### 4-) VHALReader
 
-This is a very simple app that reads speed value from the VHAL that created. EmrLauncher also does it but this was an another task in case study. So this app was created and named it "VHALReader".
+This is a very basic app that reads speed value from the VHAL that created. EmrLauncher also does it but this was an another task in case study. So this app was created and named it "VHALReader".
 It has `android.car` library with jar file that taken from AOSP build like explained before.
 
 <img src="pictures/vhalreader.png" alt="drawing" width="700"/>
