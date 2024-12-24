@@ -41,7 +41,7 @@ EmrLauncher has been created to make a car infotainment system demo.
 
 <img src="pictures/emrlauncher.png" alt="drawing" width="700"/>
 
-**EmrLauncher All Apps Activity**
+**EmrLauncher App Drawer Activity**
 
 <img src="pictures/allapps.png" alt="drawing" width="700"/>
 
@@ -55,7 +55,7 @@ EmrLauncher has been created to make a car infotainment system demo.
 
 Third-party libraries like Retrofit and Hilt were used to make codebase more readable and maintainable with clean architecture. But unfortunately this situation caused a problem. Those libraries are not available in AOSP codebase. So Soong build system can't detect them while building. Then the prebuilt launcher APK has been added as a prebuilt app package. EmrLauncher overrides the default CarLauncher package. When included in an AOSP build, the default launcher package is not installed.
 
-**NOTE:** This problem was realized later and since there was no time to add third-party libraries to the AOSP or rewriting launcher app codebase, so it was decided to add a prebuilt apk of the launcher. 
+**NOTE:** This problem was realized later and since there was no time to add third-party libraries to the AOSP or rewriting launcher app codebase, it was decided to add a prebuilt apk of the launcher. 
 
 **Android.bp of EmrLauncher**
 
@@ -164,10 +164,14 @@ static_libs: [
 ],   
 ```
 
-Or it can be added by copying `android.car.jar` from AOSP build outputs.
+Or it can be added by copying `android.car.jar` from AOSP build outputs and adding it to build.gradle.kts or build.gradle.
 Path:
 ```bash
-out/target/product/emulator_car_x86_64/system/framework
+out/target/product/emulator_car_x86_64/system/framework/android.car.jar
+```
+
+```bash
+implementation(files("libs/android.car.jar"))
 ```
 
 Also these permissions must be added in AndroidManifest.xml to get vehicle data:
@@ -181,7 +185,7 @@ Also these permissions must be added in AndroidManifest.xml to get vehicle data:
 <uses-permission android:name="android.car.permission.CAR_VENDOR_EXTENSION" />
 ```
 
-Normally app must request these permissions at runtime to get vehicle information but our launcher app is a priviliged system app. Runtime permission example will be explained at other part in this document.
+Normally app must request these permissions at runtime to get vehicle information but our launcher app is a priviliged system app. Runtime permission example will be explained in another part of this document.
 
 `Android.bp` file line 7:
 ```bash
@@ -213,11 +217,14 @@ Otherwise the Android OS will get into bootloop if you don't. (Happened before)
 
 **Optional part:**
 The VHAL that written in this case study, has generated a java library to get `VehicleProperties`. This class has vehicle property enums to get data from system. Actually it is not necessary but if you added a custom vendor property, it should be added.
-You can also get custom property value via using property integer value without this class.
+You can also get custom property values via using integer value of property without this class/jar.
+
+Generated JAR path:
+`out/target/common/obj/JAVA_LIBRARIES/togg.emre.vehicle-V1.0-java_intermediates/classes.jar`
 
 **Fetching Live Car Property Data**
 
-The VHAL written in this case study, changes `PERF_VEHICLE_SPEED` value based on device device output. It is like reading a value from a driver. It will be explained later in this document.
+The VHAL written in this case study, changes `PERF_VEHICLE_SPEED` value based on device driver output. It is like a demonstration that reading a value from a driver. It will be explained later in this document.
 
 Since we have `android.car` library in our project, we can register a callback to get car data:
 
@@ -226,14 +233,14 @@ mCarPropertyManager = Car.createCar(this).getCarManager(Car.PROPERTY_SERVICE) as
 mCarPropertyManager.registerCallback(object : CarPropertyEventCallback {
     override fun onChangeEvent(carPropertyValue: CarPropertyValue<*>) {
         Log.d("vspeed","onChangeEvent(" + carPropertyValue.value + ")")
-        speed.floatValue = carPropertyValue.value as Float
+        speedViewModel.setSpeed(carPropertyValue.value as Float)
     }
     override fun onErrorEvent(propId: Int, zone: Int) {
         Log.d("vspeed", "error")
     }
 }, VehiclePropertyIds.PERF_VEHICLE_SPEED, CarPropertyManager.SENSOR_RATE_NORMAL)
 ```
-Then we can update our UI with it. This example was to get vehicle speed. Other properties can be fetched from system by this way.
+Then we can update our UI with it. This example was to get vehicle speed. Other properties can be fetched from system by this way. Unfortunately, there was no time to implement other vehicle properties to the launcher UI.
 
 ### 1-b) SystemUI Modifications
 
@@ -249,7 +256,7 @@ It can be seen that removed bottom navigation bar and removed Bluetooth, Wi-Fi a
 
 SystemUI file changes can be discovered in this repo under `patches/aaos-emre.patch`.
 
-The all apps button at status bar was connected to the AllAppsActivity of EmrLauncher by this change:
+The all apps button at status bar was connected to the AppDrawerActivity of EmrLauncher by this change:
 
 ```diff
 -systemui:intent="intent:#Intent;action=com.android.car.carlauncher.ACTION_APP_GRID;package=com.android.car.carlauncher;launchFlags=0x24000000;end"
@@ -262,7 +269,7 @@ ______________________________________
 
 ### 2-) CarUtility App
 
-Another task in this case study was creating a system application that starts at boot time. That was done by registering a `BroadcastReceiver` and starting a foreground service. Also this app was added to the AOSP source code with Soong blueprint file and its source code. AOSP builds and installs it to the system.
+Another task in this case study was creating a system application that starts at boot time. That was done by registering a `BroadcastReceiver` and starting a foreground service. Also this app was added to the AOSP source code with Soong .bp file and its source code. AOSP builds and installs it to the system.
 
 <img src="pictures/carutility.png" alt="drawing" width="700"/>
 
@@ -275,7 +282,6 @@ android_app {
     srcs: ["automotive/src/main/**/*.java", "automotive/src/main/**/*.kt"],
     resource_dirs: ["automotive/src/main/res"],
     manifest: "automotive/src/main/AndroidManifest.xml",
-    privileged: true,
     certificate: "platform",
     static_libs: [
         "androidx.appcompat_appcompat",
@@ -338,22 +344,24 @@ VHAL writes the data obtained from this driver to the speed data in the system.
 
 Building emulator kernel reference: https://source.android.com/docs/setup/build/building-kernels
 
-**Fetching kernel source**
+**Fetching Kernel Source**
 
 ```bash
 mkdir android-kernel && cd android-kernel
 repo init -u https://android.googlesource.com/kernel/manifest -b common-android13-5.15 --depth=1
-repo sync
+repo sync -j<based on connection bandwith>
 ```
+
+`--depth=1` argument is for reducing the repo size. It fetches only the most recent commit of each repository's history, rather than the entire history. Also used this argument while initializing AOSP 13 source code repo.
 
 Used common-android13-5.15 kernel since the AOSP/AAOS version is 13.
 
 **Adding Device Driver Code To The Kernel**
 
 Kernel source code is located at `common` folder in this repo. So driver can be added in:
-`drivers/misc`.
+`common/drivers/misc`.
 
-Device driver file:
+Device driver file in this case study repository:
 [kernel/drivers/misc/emr_vehicle.c](kernel/drivers/misc/emr_vehicle.c)
 
 Added driver option to the **drivers/misc/Kconfig**
@@ -370,7 +378,7 @@ Added Makefile command to the **drivers/misc/Makefile**
 ```makefile
 obj-$(CONFIG_EMR_VEHICLE)   += emr_vehicle.o
 ```
-Or it can be just added for not dealing with defconfig files:
+Or it can be added like this for not dealing with defconfig files. Kernel will build it without config option:
 ```makefile
 obj-y += emr_vehicle.o
 ```
@@ -394,7 +402,7 @@ emulator -kernel <bzImage-path> -no-snapshot-load
 
 <img src="pictures/char-device.png" alt="drawing" width="700"/>
 
-As you can see, we have /dev/emr_vehicle.
+As you can see, we have `/dev/emr_vehicle`.
 
 #### 3-b) Creating VHAL
 
@@ -404,7 +412,7 @@ AOSP VHAL: `hardware/interfaces/automotive/vehicle/2.0/default/impl/vhal_v2_0`
 
 Reference Third Party VHAL: https://github.com/nkh-lab/aosp-ncar-vehicle-hal
 
-Final VHAL, takes speed value from `/dev/emr_vehicle` instead of taking/generating property values from somewhere. So added a sepolicy rule to access to `/dev/emr_vehicle`.
+Final VHAL (togg.emre.vehicle), takes speed value from `/dev/emr_vehicle` instead of taking/generating property values from somewhere. So a sepolicy rule was added to access `/dev/emr_vehicle`.
 
 **VHAL File Structure**
 ```bash
@@ -431,16 +439,18 @@ Final VHAL, takes speed value from `/dev/emr_vehicle` instead of taking/generati
 
 **1.0 directory**:
 
-It has Android.bp to make a HAL package. It generates shared object and Java code to include things in `types.hal`.
+It has Android.bp to make a HAL package. It generates shared object and Java code to include properties in `types.hal`.
 
-`types.hal`: Has `VehicleProperty` definitions that inherited from AOSP. Also has a custom vendor property that not used in this case study. For e.g. `Simulator.cpp` can access device properties by this file via including 
+`types.hal`: Has `VehicleProperty` definitions that inherited from AOSP. Also has a custom vendor property that not used in this case study.
+
+`Simulator.cpp` can access device properties by this file via including generated header of it:
 ```c
 #include "togg/emre/vehicle/1.0/types.h"
 ```
 
 **Android.bp**:
 
-This one has Soong instructions to build complete custom VHAL. Includes shared libraries from AOSP and HAL package that mentioned above. The important part is it has "overrides" declaration which overrides AOSP default VHAL service and emulator VHAL service.
+This one has Soong instructions to build complete custom VHAL. Includes shared libraries from AOSP and HAL package that mentioned above. The important part is "overrides" declaration which overrides AOSP default VHAL service and emulator VHAL service.
 
 **SELinux Policy**
 
@@ -461,17 +471,19 @@ allow hal_togg_emre emr_vehicle_device:chr_file { read write open ioctl };
 ```
 It can be seen that sepolicy has a char device rule to access it.
 
-`file_contexts` to define files that will be used by this VHAL:
+`file_contexts` has file definitions that will be used by this VHAL. This definitions used in `hal_togg_emre_vehicle.te`:
 
 ```bash
 /dev/emr_vehicle  u:object_r:emr_vehicle_device:s0
 /vendor/bin/hw/togg.emre.vehicle@1.0-service u:object_r:hal_togg_emre_exec:s0
 ```
 
+`/vendor/bin/hw/togg.emre.vehicle@1.0-service` is the binary that `togg.emre.vehicle@1.0-service.rc` inits it at boot. SELinux recognizes it as `hal_togg_emre_exec` by this definitions and allows defined operations in `hal_togg_emre_vehicle.te`
+
 **DefaultConfig.h**
 
 Based on `hardware/interfaces/automotive/vehicle/2.0/default/impl/vhal_v2_0/DefaultConfig.h`.
-Because the new VHAL overrides other internal VHALs. So it has to contain all properties in itself.
+Because the new VHAL overrides other internal VHALs. So it should contain all properties in itself in case of changing a property value in system.
 
 **Runnable.h**
 
@@ -483,32 +495,33 @@ Extends `VehicleHalClient` and `Runnable` classes. Because it is a VehicleHalCli
 
 **VehicleService.cpp**
 
-It has main code. Registers as a service via `VehicleHalManager` with `VehicleHalImpl` which contains a `VehicleHalClient` as `Simulator`.
+It has main function of service. Registers as a VHAL service via `VehicleHalManager` with `VehicleHalImpl` which contains a `VehicleHalClient` as `Simulator`.
 
-Other C++ files are from AOSP VHAL implementation. They override AOSP VHAL functions.
+Other C++ files are from AOSP VHAL implementation. They override AOSP VHAL functions to register it as a VHAL service.
 
 **togg.emre.vehicle@1.0-service.rc**
 
-It has service initialization definitons like service class, user, group. It has to be compatible with SELinux policy. Otherwise SELinux deny the service registration.
+It has service initialization definitons like service class, user, group. It has to be compatible with SELinux policy. Otherwise SELinux deny the service registration. For example another class, user, group probably cause a `avc` denied error.
 
 **togg.emre.vehicle@1.0-service.xml**
 
 It has HAL definitions.
 
-**IMPORTANT NOTE:** Normally `togg.emre.vehicle@1.0-service` or any other VHAL service can't directly access to `/dev/emr_vehicle` because of file system permissions even SELinux allows it. Kernel creates the driver with root level permissions.
+**IMPORTANT NOTE:** Normally `togg.emre.vehicle@1.0-service` or any other VHAL service can't directly access to `/dev/emr_vehicle` because of file system permissions. Even SELinux allows it. Kernel creates the driver with root level permissions. The VHAL user is `vehicle_network`.
 
 ```bash
-emulator_car_x86_64:/ # ls -la /dev/emr_vehicle                                
+emulator_car_x86_64:/ # ls -la /dev/emr_vehicle
 crw------- 1 root root 237,   0 2024-12-24 09:16 /dev/emr_vehicle
 emulator_car_x86_64:/ #
 ```
-The VHAL services need communicate with another system service that running as root to get value from device devices. Unfortunately there was no time to develop such a service. Therefore, permission of driver must be set with `chmod 666 /dev/emr_vehicle`.
-This way, this VHAL case study can demonstrate communicating with a driver.
+The VHAL services need communicate with another system service that running as root or another privileged user to get value from device devices. Unfortunately there was no time to develop such a service. Therefore, permission of the driver must be set with `chmod 666 /dev/emr_vehicle`.
+This way, VHAL case study can demonstrate communicating with a driver.
 ______________________________________
 
 ### 4-) VHALReader
 
-This is a very basic app that reads speed value from the VHAL that created. EmrLauncher also does it but this was an another task in case study. So this app was created and named it "VHALReader".
+This is a very basic app that reads speed value from system. EmrLauncher also does it but this was an another task in case study. So this app was created and named it "VHALReader".
+
 It has `android.car` library with jar file that taken from AOSP build like explained before.
 
 <img src="pictures/vhalreader.png" alt="drawing" width="700"/>
@@ -519,9 +532,9 @@ Reading speed from `/dev/emr_vehicle` via VHAL that created before. (`togg.emre.
 
 <img src="pictures/char-device-with-launcher.png" alt="drawing" width="700"/>
 
-It has also a Soong file (Android.bp) and AOSP can build and install it to the system.
+It has also a Soong build file (Android.bp) and AOSP can build and install it to the system.
 
-**NOTE:** This app is not a priviliged app. So it has to request runtime permission to get vehicle speed.
+**NOTE:** This app is not a privileged app. So it has to request runtime permission to get vehicle speed.
 
 ```kotlin
 val permissions: MutableList<String> = ArrayList()
@@ -543,11 +556,11 @@ Those changes are added to emulator build. This part explains how.
 
 #### 5-a) SELinux Policy
 
-The VHAL service (`togg.emre.vehicle@1.0-service`) has a SELinux policy which file is `hal_togg_emre_vehicle.te`. It was located in `device/generic/car/common/sepolicy` and added `file_contexts` definitions there.
+The VHAL service (`togg.emre.vehicle@1.0-service`) has a SELinux policy which file is `hal_togg_emre_vehicle.te`. It was located in `device/generic/car/common/sepolicy/hal_togg_emre_vehicle.te` and added `file_contexts` definitions there.
 
 #### 5-b) Packages
 
-All of the packages that explained before are added in the Makefile which located in `device/generic/car/common/car.mk`
+All of the packages that explained before are added in the car.mk file which located in `device/generic/car/common/car.mk`
 
 ```bash
 PRODUCT_PACKAGES += togg.emre.vehicle@1.0-service

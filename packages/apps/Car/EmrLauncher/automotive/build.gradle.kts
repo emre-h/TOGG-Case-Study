@@ -58,7 +58,7 @@ dependencies {
     implementation(libs.accompanist.systemuicontroller)
 
     implementation (files("libs/android.car.jar")) // For including android.car library. Taken from AOSP build
-    implementation (files("libs/classes.jar")) // For including togg.emre.vehicle.VehicleProperties. Taken from AOSP build
+    implementation (files("libs/togg.emre.vehicle.classes.jar")) // For including togg.emre.vehicle.VehicleProperties. Taken from AOSP build
 
     implementation(libs.hilt.android.v2511)
     implementation(libs.hilt)
