@@ -44,8 +44,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     // Get the ViewModel instances using Hilt
     private val weatherViewModel: WeatherViewModel by viewModels()
-    private val carViewModel: CarViewModel by viewModels()
     private val speedViewModel: SpeedViewModel by viewModels()
+    private val carViewModel: CarViewModel by viewModels()
 
     private lateinit var mCarPropertyManager: CarPropertyManager
 
