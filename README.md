@@ -45,6 +45,8 @@ EmrLauncher has been created to make a car infotainment system demo.
 
 **NOTE:** WeatherCard was implemented to fetch weather state from OpenWeatherMap API but commented out that lines to hide API key. Because this repo is public. Currently weather information is hardcoded on screen.
 
+**NOTE:** The map on the launcher is a WebView. Because emulator build does not have Google Services to run a Google Map library.
+
 #### Source Code Structure & Soong Package Of EmrLauncher
 
 Third-party libraries like Retrofit and Hilt were used to make codebase more readable and maintainable with clean architecture. But unfortunately this situation caused a problem. Those libraries are not available in AOSP codebase. So Soong build system can't detect them while building. Then the prebuilt launcher APK has been added as a prebuilt app package and overrided the default AAOS launcher.
@@ -175,7 +177,7 @@ Also these permissions must be added in AndroidManifest.xml to get vehicle data:
 <uses-permission android:name="android.car.permission.CAR_VENDOR_EXTENSION" />
 ```
 
-Normally app must request these permissions at runtime to get vehicle information but our launcher app is a priviliged system app.
+Normally app must request these permissions at runtime to get vehicle information but our launcher app is a priviliged system app. Runtime permission example will be explained at other part in this document.
 
 `Android.bp` file line 7:
 ```bash

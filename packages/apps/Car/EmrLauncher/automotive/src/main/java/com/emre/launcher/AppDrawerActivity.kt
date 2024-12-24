@@ -7,9 +7,11 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -31,8 +33,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
@@ -41,6 +45,7 @@ import com.emre.launcher.data.repository.AppRepositoryImpl
 import com.emre.launcher.domain.usecases.GetLaunchableAppsUseCase
 import com.emre.launcher.ui.theme.EmrLauncherTheme
 import com.emre.launcher.ui.viewmodels.AppDrawerViewModel
+import com.emre.launcher.ui.views.GothamText
 
 class AppDrawerActivity : ComponentActivity() {
     private val repository by lazy {
@@ -70,33 +75,39 @@ class AppDrawerActivity : ComponentActivity() {
         val screenWidth = configuration.screenWidthDp
 
         EmrLauncherTheme {
-            Scaffold(modifier = Modifier.fillMaxSize(), containerColor = Color(0xFF121212)) { innerPadding ->
-                Column {
-                    Spacer(Modifier.height(10.dp))
-                    Row {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_action_back),
-                            colorFilter = ColorFilter.tint(Color.LightGray),
-                            contentDescription = "Tıklanabilir Resim",
-                            modifier = Modifier.padding(start = screenWidth*0.07.dp)
-                                .height(48.dp)
-                                .width(48.dp)
-                                .clickable {
-                                    finish()
-                                }
-                        )
-                        Spacer(Modifier.width(screenWidth*0.1.dp))
-                        Text(
-                            text = "All Apps On Your Car",
-                            modifier = Modifier.padding(top = 5.dp),
-                            color = Color.LightGray,
-                            fontSize = 36.sp
-                        )
-                    }
-                    Spacer(Modifier.height(30.dp))
-                    LazyVerticalGrid(columns = GridCells.Fixed(4)) {
-                        items(apps) { app ->
-                            AppCard(app = app)
+            Box {
+                enableEdgeToEdge()
+
+                Image(
+                    modifier = Modifier.fillMaxSize(),
+                    painter = painterResource(R.drawable.wallp3),
+                    contentDescription = "background_image",
+                    contentScale = ContentScale.FillBounds
+                )
+
+                Scaffold(modifier = Modifier.fillMaxSize().padding(top = 80.dp), containerColor = Color(0x44050505)) { innerPadding ->
+                    Column {
+                        Spacer(Modifier.height(10.dp))
+                        Row {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_action_back),
+                                colorFilter = ColorFilter.tint(Color.LightGray),
+                                contentDescription = "App icon",
+                                modifier = Modifier.padding(start = screenWidth*0.07.dp)
+                                    .height(48.dp)
+                                    .width(48.dp)
+                                    .clickable {
+                                        finish()
+                                    }
+                            )
+                            Spacer(Modifier.width(screenWidth*0.1.dp).height(5.dp))
+                            GothamText("All Apps On Your Car", 36.sp, Color.White, FontWeight.Normal)
+                        }
+                        Spacer(Modifier.height(30.dp))
+                        LazyVerticalGrid(columns = GridCells.Fixed(4)) {
+                            items(apps) { app ->
+                                AppCard(app = app)
+                            }
                         }
                     }
                 }
@@ -140,7 +151,7 @@ class AppDrawerActivity : ComponentActivity() {
                 startActivity(it)
             }
         } catch (e: Exception) {
-            // Hata mesajı veya kullanıcıya bildirim yapabilirsiniz
+            e.printStackTrace()
         }
     }
 
