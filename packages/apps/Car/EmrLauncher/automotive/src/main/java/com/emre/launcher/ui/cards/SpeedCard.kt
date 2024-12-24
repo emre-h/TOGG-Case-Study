@@ -17,7 +17,6 @@ import com.emre.launcher.ui.views.Speedometer
 
 @Composable
 fun SpeedCard(modifier: Modifier, speed: Float) {
-
     GradientCard(
         modifier = modifier,
         colors = listOf(Color(0xff074799), Color(0xff009990))

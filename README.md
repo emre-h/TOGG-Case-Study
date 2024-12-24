@@ -122,6 +122,30 @@ src/main/java/com/emre/launcher/
         └── Speedometer.kt
 ```
 
+Also it has some unit tests:
+```bash
+└── test
+    └── java
+        └── com
+            └── emre
+                └── launcher
+                    ├── CarViewModelTest.kt
+                    └── SpeedViewModelTest.kt
+```
+
+SpeedViewModelTest caught a small bug.
+
+The _speedState initial value was 5f in `SpeedViewModelTest.kt`. That was a mistake while happened in development stage.
+
+```kotlin
+private val _speedState = mutableFloatStateOf(5f)
+```
+
+So `assertEquals(0f, speedViewModel.speedState.value)` caught it and test failed. Then it was changed to 0f.
+
+
+<img src="pictures/unittest.png" alt="drawing" width="700"/>
+
 #### Fetching Vehicle Data From System
 
 Normally there is no internal Android car library (`android.car`) in Android app projects. Car library can be added by Soong with:
