@@ -41,7 +41,9 @@ EmrLauncher has been created to make a car infotainment system demo.
 
 <img src="pictures/emrlauncher.png" alt="drawing" width="700"/>
 
-**Info:** Door open or closed UI was rendered with `Canvas`.
+**Info:** EmrLauncher has a few custom views. For e.g. door open or closed state was rendered using `Canvas`.
+
+**NOTE:** WeatherCard was implemented to fetch weather state from OpenWeatherMap API but commented out that lines to hide API key. Because this repo is public. Currently weather information is hardcoded on screen.
 
 #### Source Code Structure & Soong Package Of EmrLauncher
 
