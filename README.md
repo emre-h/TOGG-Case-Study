@@ -504,8 +504,20 @@ Reading speed from `/dev/emr_vehicle` via VHAL that created before. (`togg.emre.
 
 It has also a Soong file (Android.bp) and AOSP can build and install it to the system.
 
-Source code is located at `packages/apps/Car/VHALReader` in this repository.
+**NOTE:** This app is not a priviliged app. So it has to request runtime permission to get vehicle speed.
 
+```kotlin
+val permissions: MutableList<String> = ArrayList()
+permissions.add(Car.PERMISSION_SPEED)
+
+if (checkSelfPermission(Car.PERMISSION_SPEED) != PackageManager.PERMISSION_GRANTED) {
+    requestPermissions(permissions.toTypedArray(), REQUEST_CODE_ASK_PERMISSIONS)
+} else {
+    setSpeedToView()
+}
+```
+
+Source code is located in `packages/apps/Car/VHALReader` in this repository.
 ______________________________________
 
 ### 5-) Device Repo Changes For Emulator Build
@@ -514,7 +526,7 @@ Those changes are added to emulator build. This part explains how.
 
 #### 5-a) SELinux Policy
 
-The VHAL service (`togg.emre.vehicle@1.0-service`) has a SELinux policy which file is `hal_togg_emre_vehicle.te`. It was located to `device/generic/car/common/sepolicy` and added `file_contexts` definitions there.
+The VHAL service (`togg.emre.vehicle@1.0-service`) has a SELinux policy which file is `hal_togg_emre_vehicle.te`. It was located in `device/generic/car/common/sepolicy` and added `file_contexts` definitions there.
 
 #### 5-b) Packages
 
